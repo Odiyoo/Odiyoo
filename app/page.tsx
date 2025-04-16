@@ -133,7 +133,7 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center">
-                  <div className="rounded-full bg-primary/10 p-3 mb-3">
+                  <div className="rounded-full bg-primary/10 p-3 mb-3 float-animation-1">
                     <Shield className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-medium">Gecontroleerde vakmannen</h3>
