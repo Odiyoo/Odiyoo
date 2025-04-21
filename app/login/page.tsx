@@ -5,21 +5,21 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { login, signup } from "@/domain/authActions"
 import { useState } from "react"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
 import { loginSchema, LoginSchema } from "@/domain/auth"
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import Navbar from "@/components/navbar"
 
 
 export default function LoginPage() {
 
   const [loading, setLoading] = useState(false);
-  
+  const router = useRouter();
+
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,7 +30,7 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginSchema) => {
     setLoading(true);
-    console.log(data);
+
     const res = await fetch("/api/login", {
       method: "POST",
       body: JSON.stringify(data),
@@ -45,13 +45,15 @@ export default function LoginPage() {
     if (!res.ok) {
       form.setError("email", { message: result.message || "Inloggen mislukt" });
     } else {
-      redirect('/dashboard'); // TODO: is this used on client or server?
+      // TODO: store user role in session? or fetch
+      router.push('/dashboard');
       //window.location.href = "/dashboard";
     }
   };
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Navbar />
       <main className="flex flex-1 items-center justify-center bg-gray-50 p-4">
         <Card className="mx-auto w-full max-w-md">
           <CardHeader className="space-y-1 text-center">
@@ -61,53 +63,57 @@ export default function LoginPage() {
           <CardContent className="space-y-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <div className="space-y-2">
-                      <FormLabel htmlFor="email">E-mail</FormLabel>
-                      <FormControl>
-                        <Input id="email" type="email" placeholder="m@voorbeeld.be" {...field}/>
-                      </FormControl>
-                      <FormMessage/>
-                    </div>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <FormLabel htmlFor="password">Wachtwoord</FormLabel>
-                        <Link href="/forgot-password" className="text-xs text-primary hover:underline">
-                          Wachtwoord vergeten?
-                        </Link>
-                      </div>
-                      <FormControl>
-                        <Input id="password" type="password" placeholder="********" {...field}/>
-                      </FormControl>
-                      <FormMessage/>
-                    </div>
-                  )}
-                />
-                
-                <Button type="submit" className="w-full">
+                <div className="my-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <>
+                        <FormLabel htmlFor="email">E-mail</FormLabel>
+                        <FormControl>
+                          <Input id="email" type="email" placeholder="m@voorbeeld.be" className="mt-2" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </>
+                    )}
+                  />
+                </div>
+                <div className="my-4">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <>
+                        <div className="flex items-center justify-between mb-2">
+                          <FormLabel htmlFor="password">Wachtwoord</FormLabel>
+                          <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+                            Wachtwoord vergeten?
+                          </Link>
+                        </div>
+                        <FormControl>
+                          <Input id="password" type="password" placeholder="********" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </>
+                    )}
+                  />
+                </div>
+
+                <Button type="submit" className="w-full mt-6">
                   {loading ? "Inloggen..." : "Inloggen"}
                 </Button>
-                <Separator />
-                <div className="space-y-4">
-                  <Button variant="outline" className="w-full">
+                <Separator className="my-4" />
+                <div>
+                  <Button variant="outline" className="w-full mb-2">
                     Doorgaan met Google
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full mb-2">
                     Doorgaan met Facebook
                   </Button>
                 </div>
               </form>
             </Form>
-            
+
           </CardContent>
           <CardFooter className="flex flex-col space-y-4 text-center">
             <div className="text-sm text-muted-foreground">

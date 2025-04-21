@@ -1,3 +1,4 @@
+import { loginPath, adminPath, getRole } from '@/domain/auth'
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
@@ -36,17 +37,70 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  
 
+  // if user is not authenticated, redirect to /login
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
+    (request.nextUrl.pathname.startsWith('/dashboard') ||
+    request.nextUrl.pathname.startsWith('/admin'))
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = loginPath;
+    return NextResponse.redirect(url);
+  }
+  
+  if (user) {
+
+    // Fetch the user role from database
+    const role = await getRole(user.id);
+    // if user is not authorized, redirect to /
+    if (
+      request.nextUrl.pathname.startsWith('/admin') &&
+      role != "admin"
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  /*if (
+    !user &&
+    !request.nextUrl.pathname.startsWith(loginPath) &&
     !request.nextUrl.pathname.startsWith('/auth')
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = loginPath;
     return NextResponse.redirect(url)
-  }
+  }*/
+
+  /*if (user) {
+    // Fetch the user role from database
+    const { data: userProfile } = await supabase
+    .from('user_info')
+    .select(`
+      user_roles (
+        role
+      )
+      `)
+    .eq('id', user.id)
+    .single();
+
+    const role = userProfile?.user_roles.role;
+
+    // Add role-based route protection
+    const pathname = request.nextUrl.pathname;
+
+    if (pathname.startsWith('/admin') && role !== 'admin') {
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
+    }
+
+    if (pathname.startsWith('/dashboard') && role !== 'customer') {
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
+    }
+  }*/
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:
