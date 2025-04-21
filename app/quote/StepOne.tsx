@@ -7,21 +7,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { calculateExtrasCost } from "@/domain/contractors";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
+import { FormData } from "./page"
 
 type SidebarProps = {
-    formData: any,
+    formData: FormData,
     setFormData: any,
     handleStep1Complete: any,
 };
 
-export default function StepOne({formData, setFormData, handleStep1Complete}: SidebarProps) {
+export default function StepOne({ formData, setFormData, handleStep1Complete }: SidebarProps) {
 
     const [showAddressSuggestions, setShowAddressSuggestions] = useState(false);
     const [addressSuggestions, setAddressSuggestions] = useState([]);
     const addressInputRef = useRef(null)
+    const addressRef = useRef<any>(null)
+
+    const { isLoaded: hasGmapsLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: "AIzaSyARTWcUUS8RHo9FZOCA4bnF8VxXUU0wcRk", //process.env.NEXT_PUBLIC_GMAPS_API_KEY!,
+        libraries: ['places']
+    })
 
     const handleAddressSelect = (suggestion) => {
-        setFormData((prev) => ({
+        setFormData((prev: FormData) => ({
             ...prev,
             address: suggestion.address,
         }))
@@ -29,22 +38,22 @@ export default function StepOne({formData, setFormData, handleStep1Complete}: Si
     }
 
     const handleSelectChange = (name, value) => {
-        setFormData((prev) => ({ ...prev, [name]: value }))
+        setFormData((prev: FormData) => ({ ...prev, [name]: value }))
     }
 
     // Add a function to handle roof color selection
-    const handleRoofColorSelect = (color) => {
-        setFormData((prev) => ({ ...prev, roofColor: color }))
+    const handleRoofColorSelect = (color: string) => {
+        setFormData((prev: FormData) => ({ ...prev, roofColor: color }))
     }
 
     // Add a function to toggle extras as buttons
     const toggleExtra = (name: string) => {
-        setFormData((prev) => ({
-        ...prev,
-        extras: {
-            ...prev.extras,
-            [name]: !prev.extras[name],
-        },
+        setFormData((prev: FormData) => ({
+            ...prev,
+            extras: {
+                ...prev.extras,
+                [name]: !prev.extras[name],
+            },
         }))
     }
 
@@ -54,57 +63,61 @@ export default function StepOne({formData, setFormData, handleStep1Complete}: Si
         gutters: "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/o/v/ovation.jpg",
         solarPanels: "https://zonneplan-site.s3.amazonaws.com/uploads/2023/06/zonnepanelen-die-warmte-tegenhouden-2.png",
         skylights:
-        "https://i0.wp.com/dakraamkopen.be/wp-content/uploads/2021/04/VELUX-GGLS-2in1-Asymmetrisch.jpg?fit=1280%2C888&ssl=1",
+            "https://i0.wp.com/dakraamkopen.be/wp-content/uploads/2021/04/VELUX-GGLS-2in1-Asymmetrisch.jpg?fit=1280%2C888&ssl=1",
         facadeCladding:
-        "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/c/e/cedral-board-c05-platinagrijs-foto_2.jpg",
+            "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/c/e/cedral-board-c05-platinagrijs-foto_2.jpg",
     }
 
     // Material images
     const materialImages = {
         dakpannen: {
-        antraciet:
-            "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/s/n/sneldek-classic-antraciet-foto.jpg",
-        rood: "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/s/n/sneldek-classic-rood-foto.jpg",
+            antraciet:
+                "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/s/n/sneldek-classic-antraciet-foto.jpg",
+            rood: "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/s/n/sneldek-classic-rood-foto.jpg",
         },
         leien: {
-        natuurleien:
-            "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/n/a/natuurleien_2.jpg",
-        kunstleien:
-            "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/a/l/alterna-donkergrijs_9.jpg",
+            natuurleien:
+                "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/n/a/natuurleien_2.jpg",
+            kunstleien:
+                "https://andrecelis.be/media/catalog/product/cache/d8af12506aec112928c5b5c8d00371d9/a/l/alterna-donkergrijs_9.jpg",
         },
     }
 
     // Click outside to close address suggestions
     useEffect(() => {
         const handleClickOutside = (event) => {
-        if (addressInputRef.current && !addressInputRef.current.contains(event.target)) {
-            setShowAddressSuggestions(false)
-        }
+            if (addressInputRef.current && !addressInputRef.current.contains(event.target)) {
+                setShowAddressSuggestions(false)
+            }
         }
 
         document.addEventListener("mousedown", handleClickOutside)
         return () => {
-        document.removeEventListener("mousedown", handleClickOutside)
+            document.removeEventListener("mousedown", handleClickOutside)
         }
     }, [])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
         setFormData((prev) => ({ ...prev, [name]: value }))
-    
+
         if (name === "address" && value.length > 3) {
-          // Simulate address autocomplete
-          const mockAddresses = [
-            { address: `${value} 1`, city: "Amsterdam", state: "NH", zip: "1011 AB" },
-            { address: `${value} 2`, city: "Rotterdam", state: "ZH", zip: "3011 CD" },
-            { address: `${value} 3`, city: "Utrecht", state: "UT", zip: "3511 EF" },
-            { address: `${value} 4`, city: "Den Haag", state: "ZH", zip: "2511 GH" },
-          ]
-          setAddressSuggestions(mockAddresses)
-          setShowAddressSuggestions(true)
+            // Simulate address autocomplete
+            const mockAddresses = [
+                { address: `${value} 1`, city: "Amsterdam", state: "NH", zip: "1011 AB" },
+                { address: `${value} 2`, city: "Rotterdam", state: "ZH", zip: "3011 CD" },
+                { address: `${value} 3`, city: "Utrecht", state: "UT", zip: "3511 EF" },
+                { address: `${value} 4`, city: "Den Haag", state: "ZH", zip: "2511 GH" },
+            ]
+            setAddressSuggestions(mockAddresses)
+            //setShowAddressSuggestions(true) replaced by Google places API
         } else if (name === "address" && value.length <= 3) {
-          setShowAddressSuggestions(false)
+            setShowAddressSuggestions(false)
         }
+    }
+
+    const handleOnPlacesChanged = () => {
+        let address = addressRef.current.getPlaces();
     }
 
     return (
@@ -120,14 +133,19 @@ export default function StepOne({formData, setFormData, handleStep1Complete}: Si
                 <div className="space-y-4">
                     <div className="space-y-2 relative" ref={addressInputRef}>
                         <Label htmlFor="address">Adres</Label>
-                        <Input
-                            id="address"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleInputChange}
-                            placeholder="Begin met typen voor suggesties..."
-                            className="w-full"
-                        />
+                        {hasGmapsLoaded && <StandaloneSearchBox
+                            onLoad={(ref) => addressRef.current = ref}
+                            onPlacesChanged={handleOnPlacesChanged}>
+                            <Input
+                                id="address"
+                                name="address"
+                                value={formData.address}
+                                onChange={handleInputChange}
+                                placeholder="Begin met typen voor suggesties..."
+                                className="w-full"
+                            />
+                        </StandaloneSearchBox>
+                        }
 
                         {/* Address Autocomplete */}
                         {showAddressSuggestions && addressSuggestions.length > 0 && (

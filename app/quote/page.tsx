@@ -19,24 +19,24 @@ import StepOne from "./StepOne"
 import StepTwo from "./StepTwo"
 import { calculateQuoteForContractor, ExtendedContractor } from "@/domain/contractors"
 
-export default function QuotePage() {
+export type FormData = {
+  address: string,
+  roofSize: number,
+  roofType: "dakpannen" | "leien",
+  roofColor: string,
+  additionalServices: [],
+  selectedContractor: string,
+  extras: {
+    insulation: boolean,
+    gutters: boolean,
+    solarPanels: boolean,
+    skylights: boolean,
+    facadeCladding: boolean,
+  },
+  email: string,
+}
 
-  type FormData = {
-    address: string,
-    roofSize: number,
-    roofType: "dakpannen" | "leien",
-    roofColor: string,
-    additionalServices: [],
-    selectedContractor: string,
-    extras: {
-      insulation: boolean,
-      gutters: boolean,
-      solarPanels: boolean,
-      skylights: boolean,
-      facadeCladding: boolean,
-    },
-    email: string,
-  }
+export default function QuotePage() {
 
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
