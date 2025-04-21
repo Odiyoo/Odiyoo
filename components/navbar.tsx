@@ -9,10 +9,10 @@ export default function Navbar() {
     return (
         <header className="bg-white py-4 shadow-sm">
                 <div className="container flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <Link href="/" className="flex items-center gap-2">
                     <Home className="h-6 w-6 text-primary" />
                     <span className="text-xl font-bold">Odiyoo</span>
-                  </div>
+                  </Link>
                   <nav className="hidden space-x-6 md:flex">
                     <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground">
                       Functies
