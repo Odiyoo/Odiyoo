@@ -17,7 +17,8 @@ import { Confetti } from "@/components/confetti"
 import Sidebar from "./Sidebar"
 import StepOne from "./StepOne"
 import StepTwo from "./StepTwo"
-import { calculateQuoteForContractor, ExtendedContractor } from "@/domain/contractors"
+import { calculateInsulationCost, calculateQuoteForContractor, ContractorQuote, ExtendedContractor } from "@/domain/contractors"
+import { displayPrice } from "@/domain/finance"
 
 export type FormData = {
   address: string,
@@ -56,17 +57,16 @@ export default function QuotePage() {
     email: "",
   })
   const [quoteGenerated, setQuoteGenerated] = useState(false)
-  const [quoteData, setQuoteData] = useState({
-    basePrice: 0,
+  const [quoteData, setQuoteData] = useState<ContractorQuote>({
     materialCost: 0,
-    laborCost: 0,
-    additionalCosts: 0,
+    afbraakCost: 0,
+    timmerCost: 0,
     extrasCost: 0,
+    laborCost: 0,
     totalPrice: 0,
     estimatedDuration: "",
-    contractor: "",
   })
-  const [contractorQuotes, setContractorQuotes] = useState<any>({})
+  const [contractorQuotes, setContractorQuotes] = useState<ContractorQuote[]>({}) // array instead of object?
   const [expandedSection, setExpandedSection] = useState("address")
   const [emailSubmitted, setEmailSubmitted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -267,7 +267,7 @@ export default function QuotePage() {
     const quotes: Record<string, any> = {};
     console.log("iterating quotes");
     contractorData.forEach((contractor: ExtendedContractor) => {
-      quotes[contractor.id] = calculateQuoteForContractor(contractor, formData.roofType, formData.extras.insulation, formData.extras.gutters, formData.extras.solarPanels, formData.extras.skylights, formData.extras.facadeCladding)
+      quotes[contractor.id] = calculateQuoteForContractor(formData.roofSize, contractor, formData.roofType, formData.extras.insulation, formData.extras.gutters, formData.extras.solarPanels, formData.extras.skylights, formData.extras.facadeCladding)
     });
 
     setContractorQuotes(quotes)
@@ -429,24 +429,41 @@ export default function QuotePage() {
                   <CardContent>
                     <div className="rounded-lg bg-primary/5 p-6">
                       <div className="mb-6 text-center">
-                        <h3 className="text-2xl font-bold">€{Math.round(quoteData.totalPrice).toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold">€{displayPrice(quoteData.totalPrice).toLocaleString()}</h3>
                         <p className="text-muted-foreground">Geschatte totale kosten</p>
                       </div>
                       <Separator className="my-4" />
                       <div className="space-y-4">
                         <div className="flex justify-between">
-                          <span>Subtotaal:</span>
-                          <span className="font-medium">€{Math.round(quoteData.totalPrice).toLocaleString()}</span>
+                          <span>Afbraakwerken:</span>
+                          <span className="font-medium">€{displayPrice(quoteData.afbraakCost).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>BTW (21%):</span>
+                          <span>Timmerwerken:</span>
+                          <span className="font-medium">€{displayPrice(quoteData.timmerCost).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Dakbedekking:</span>
+                          <span className="font-medium">€{displayPrice(quoteData.materialCost).toLocaleString()}</span>
+                        </div>
+                        {formData.extras.insulation && <div className="flex justify-between">
+                          <span>Isolatie:</span>
+                          <span className="font-medium">€{displayPrice(calculateInsulationCost(formData.roofSize, contractors.find((c) => c.id == formData.selectedContractor))).toLocaleString()}</span>
+                        </div>}
+                        <Separator/>
+                        <div className="flex justify-between">
+                          <span>Subtotaal:</span>
+                          <span className="font-medium">€{displayPrice(quoteData.totalPrice).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>BTW (6%):</span>
                           <span className="font-medium">
-                            €{Math.round(quoteData.totalPrice * 0.21).toLocaleString()}
+                            €{displayPrice(quoteData.totalPrice * 0.06).toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between font-bold">
                           <span>Totaal (incl. BTW):</span>
-                          <span>€{Math.round(quoteData.totalPrice * 1.21).toLocaleString()}</span>
+                          <span>€{displayPrice(quoteData.totalPrice * 1.06).toLocaleString()}</span>
                         </div>
                       </div>
                       <div className="mt-6 rounded-lg bg-white p-4">

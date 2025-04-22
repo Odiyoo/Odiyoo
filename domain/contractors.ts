@@ -46,30 +46,42 @@ export async function getContractors(): Promise<{
     });
 }
 
+export type ContractorQuote = {
+  materialCost: number,
+  afbraakCost: number,
+  timmerCost: number,
+  extrasCost: number,
+  laborCost: number,
+  totalPrice: number,
+  estimatedDuration: string,
+}
+
 // Function to calculate quote for a specific contractor
-export const calculateQuoteForContractor = (contractor: ExtendedContractor, roofType: 'dakpannen' | 'leien', hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean) => {
-  const basePrice = 5000 + Math.floor(Math.random() * 2000)
+export const calculateQuoteForContractor = (roofSize: number, contractor: ExtendedContractor, roofType: 'dakpannen' | 'leien', hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean): ContractorQuote => {
+  //const basePrice = 5000
+  
+  //const materialModifier = contractor.dakbedekking_per_sq_meter //contractor.priceModifiers[formData.roofType]
   let materialCost = 0
-
-  const materialModifier = contractor.dakbedekking_per_sq_meter //contractor.priceModifiers[formData.roofType]
-  const laborModifier = contractor.afbraakwerken_per_sq_meter + contractor.timmerwerken_per_sq_meter //contractor.laborRate
-
+  
   switch (roofType) {
       case "dakpannen":
-      materialCost = (2000 + Math.floor(Math.random() * 1000)) * materialModifier
+        materialCost = roofSize * contractor.dakbedekking_per_sq_meter
       break
       case "leien":
-      materialCost = (8000 + Math.floor(Math.random() * 2000)) * materialModifier
+        materialCost = roofSize * contractor.dakbedekking_per_sq_meter
       break
       default:
-      materialCost = 2000 * materialModifier
+        materialCost = roofSize * contractor.dakbedekking_per_sq_meter
   }
 
-  const laborCost = (3000 + Math.floor(Math.random() * 1500)) * laborModifier
-  const additionalCosts = 500 + Math.floor(Math.random() * 500)
-  const extrasCost = calculateExtrasCost(hasInsulation, hasGutters, hasSolarPanels, hasSkylights, hasFacadeCladding)
-  const totalPrice = basePrice + materialCost + laborCost + additionalCosts + extrasCost
+  const laborCost = roofSize * (contractor.afbraakwerken_per_sq_meter + contractor.timmerwerken_per_sq_meter);
+  const afbraakCost = roofSize * contractor.afbraakwerken_per_sq_meter;
+  const timmerCost = roofSize * contractor.timmerwerken_per_sq_meter;
+  const extrasCost = calculateExtrasCost(roofSize, contractor, hasInsulation, hasGutters, hasSolarPanels, hasSkylights, hasFacadeCladding)
+  const totalPrice = materialCost + afbraakCost + timmerCost + extrasCost
 
+
+  // Determine duration
   let estimatedDuration = ""
   if (totalPrice < 10000) {
       estimatedDuration = "2-3 dagen"
@@ -80,23 +92,27 @@ export const calculateQuoteForContractor = (contractor: ExtendedContractor, roof
   }
 
   return {
-      basePrice,
       materialCost,
-      laborCost,
-      additionalCosts,
+      afbraakCost,
+      timmerCost,
       extrasCost,
+      laborCost,
       totalPrice,
       estimatedDuration,
   }
 }
 
 // Function to calculate extras cost
-export const calculateExtrasCost = (hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean) => {
+export const calculateExtrasCost = (roofSize: number, contractor: ExtendedContractor, hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean) => {
   let cost = 0
-  if (hasInsulation) cost += 2500
+  if (hasInsulation) cost += (calculateInsulationCost(roofSize, contractor))
   if (hasGutters) cost += 1200
   if (hasSolarPanels) cost += 5000
   if (hasSkylights) cost += 1800
   if (hasFacadeCladding) cost += 3200
   return cost
+}
+
+export const calculateInsulationCost = (roofSize: number, contractor: ExtendedContractor) => {
+  return roofSize * contractor.isolatie_per_sq_meter;
 }
