@@ -103,9 +103,10 @@ export const calculateQuoteForContractor = (roofSize: number, contractor: Extend
 }
 
 // Function to calculate extras cost
-export const calculateExtrasCost = (roofSize: number, contractor: ExtendedContractor, hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean) => {
+export const calculateExtrasCost = (roofSize: number, hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean, contractor?: ExtendedContractor) => {
   let cost = 0
-  if (hasInsulation) cost += (calculateInsulationCost(roofSize, contractor))
+  if (contractor && hasInsulation) cost += (calculateInsulationCost(roofSize, contractor))
+  if (!contractor && hasInsulation) cost += 4500
   if (hasGutters) cost += 1200
   if (hasSolarPanels) cost += 5000
   if (hasSkylights) cost += 1800

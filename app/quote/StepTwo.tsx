@@ -12,6 +12,7 @@ import {
   SortAsc,
   Award,
   Clock,
+  Loader2,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -216,33 +217,41 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
 
     return (
         <>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                    <CardTitle>Selecteer een aannemer</CardTitle>
-                    <CardDescription>
-                        Kies uit onze gecontroleerde dakdekkers. Elk biedt verschillende prijzen en expertise.
-                    </CardDescription>
+            <CardHeader>
+                <div className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle className="text-odiyoo">Selecteer een aannemer</CardTitle>
+                        <CardDescription>
+                            Kies uit onze gecontroleerde dakdekkers. Elk biedt verschillende prijzen en expertise.
+                        </CardDescription>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="text-sm mr-2">Sorteren op:</span>
+                        <Select value={sortOption} onValueChange={setSortOption}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Sorteren op" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="price-low">Prijs (laag naar hoog)</SelectItem>
+                                <SelectItem value="price-high">Prijs (hoog naar laag)</SelectItem>
+                                <SelectItem value="experience">Ervaring</SelectItem>
+                                <SelectItem value="rating">Beoordelingen</SelectItem>
+                                <SelectItem value="availability">Beschikbaarheid</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
-                <div className="flex items-center">
-                    <span className="text-sm mr-2">Sorteren op:</span>
-                    <Select value={sortOption} onValueChange={setSortOption}>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Sorteren op" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="price-low">Prijs (laag naar hoog)</SelectItem>
-                            <SelectItem value="price-high">Prijs (hoog naar laag)</SelectItem>
-                            <SelectItem value="experience">Ervaring</SelectItem>
-                            <SelectItem value="rating">Beoordelingen</SelectItem>
-                            <SelectItem value="availability">Beschikbaarheid</SelectItem>
-                        </SelectContent>
-                    </Select>
+                <div className="items-center flex justify-end">
+                    <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor} className="bg-odiyoo-gradient">
+                        Genereer offerte
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                 </div>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
                     {isContractorsLoading && (
-                        <div>Loading</div>
+                        <div className="flex justify-center"><Loader2 className="animate-spin"/></div>
                     )}
                     {!isContractorsLoading && getSortedContractors().map((contractor) => {
                         const quote = contractorQuotes[contractor.id] || { totalPrice: 0 }
@@ -252,7 +261,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                             <div
                                 key={contractor.id}
                                 className={`rounded-lg border p-4 transition-colors ${formData.selectedContractor === contractor.id
-                                        ? "border-primary bg-primary/5"
+                                        ? "border-odiyoo bg-primary/5"
                                         : "hover:border-primary/50"
                                     }`}
                             >
@@ -437,7 +446,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Terug
                 </Button>
-                <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor}>
+                <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor} className="bg-odiyoo-gradient">
                     Genereer offerte
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>

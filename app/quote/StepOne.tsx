@@ -123,7 +123,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
     return (
         <>
             <CardHeader>
-                <CardTitle>Gegevens voor je dakofferte</CardTitle>
+                <CardTitle className="text-odiyoo">Gegevens voor je dakofferte</CardTitle>
                 <CardDescription>
                     Vul je adres en dakgegevens in om een nauwkeurige offerte te krijgen.
                 </CardDescription>
@@ -190,14 +190,14 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                     <h4 className="font-medium">Dakbedekking</h4>
                     <Tabs defaultValue="dakpannen" onValueChange={(value) => handleSelectChange("roofType", value)}>
                         <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="dakpannen">Dakpannen</TabsTrigger>
-                            <TabsTrigger value="leien">Leien</TabsTrigger>
+                            <TabsTrigger value="dakpannen" className="hover:text-odiyoo focus:text-odiyoo">Dakpannen</TabsTrigger>
+                            <TabsTrigger value="leien" className="hover:text-odiyoo focus:text-odiyoo">Leien</TabsTrigger>
                         </TabsList>
                         <TabsContent value="dakpannen" className="mt-4 space-y-4">
                             <div className="rounded-lg border p-4">
                                 <div className="flex flex-col gap-4">
                                     <div>
-                                        <h3 className="text-lg font-semibold">Dakpannen</h3>
+                                        <h3 className="text-lg font-semibold text-odiyoo">Dakpannen</h3>
                                         <p className="text-muted-foreground">
                                             Klassieke uitstraling met uitstekende duurzaamheid. Dakpannen zijn een populaire keuze
                                             voor woningen in België.
@@ -224,7 +224,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                         <h4 className="font-medium mb-2">Kies een kleur:</h4>
                                         <div className="flex gap-4">
                                             <div
-                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "antraciet" ? "border-primary border-2" : "border-gray-200"}`}
+                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "antraciet" ? "border-odiyoo border-2" : "border-gray-200"}`}
                                                 onClick={() => handleRoofColorSelect("antraciet")}
                                             >
                                                 <img
@@ -235,7 +235,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                                 <div className="p-2 text-center text-sm">Antraciet</div>
                                             </div>
                                             <div
-                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "rood" ? "border-primary border-2" : "border-gray-200"}`}
+                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "rood" ? "border-odiyoo border-2" : "border-gray-200"}`}
                                                 onClick={() => handleRoofColorSelect("rood")}
                                             >
                                                 <img
@@ -254,7 +254,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                             <div className="rounded-lg border p-4">
                                 <div className="flex flex-col gap-4">
                                     <div>
-                                        <h3 className="text-lg font-semibold">Leien</h3>
+                                        <h3 className="text-lg font-semibold text-odiyoo">Leien</h3>
                                         <p className="text-muted-foreground">
                                             Premium dakbedekking met ongeëvenaarde levensduur en elegante uitstraling. Leien zijn
                                             een duurzame keuze voor uw dak.
@@ -281,7 +281,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                         <h4 className="font-medium mb-2">Kies een type:</h4>
                                         <div className="flex gap-4">
                                             <div
-                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "natuurleien" ? "border-primary border-2" : "border-gray-200"}`}
+                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "natuurleien" ? "border-odiyoo border-2" : "border-gray-200"}`}
                                                 onClick={() => handleRoofColorSelect("natuurleien")}
                                             >
                                                 <img
@@ -292,7 +292,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                                 <div className="p-2 text-center text-sm">Natuurleien</div>
                                             </div>
                                             <div
-                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "kunstleien" ? "border-primary border-2" : "border-gray-200"}`}
+                                                className={`cursor-pointer border rounded-md overflow-hidden ${formData.roofColor === "kunstleien" ? "border-odiyoo border-2" : "border-gray-200"}`}
                                                 onClick={() => handleRoofColorSelect("kunstleien")}
                                             >
                                                 <img
@@ -314,10 +314,10 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
 
                 {/* Extras Section - Now outside of collapsible */}
                 <div className="space-y-4">
-                    <h4 className="font-medium">Extra's</h4>
+                    <h4 className="font-medium text-odiyoo">Extra's</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.insulation ? "border-primary border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.insulation ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => toggleExtra("insulation")}
                         >
                             <div className="flex gap-4">
@@ -331,13 +331,13 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                     <p className="text-sm text-muted-foreground">
                                         Verbeter de energie-efficiëntie van je huis met hoogwaardige dakisolatie.
                                     </p>
-                                    <p className="text-sm font-medium mt-1">€2.500</p>
+                                    <p className="text-sm font-medium mt-1">≈ €2.500</p>
                                 </div>
                             </div>
                         </div>
 
                         <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.gutters ? "border-primary border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.gutters ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => toggleExtra("gutters")}
                         >
                             <div className="flex gap-4">
@@ -351,13 +351,13 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                     <p className="text-sm text-muted-foreground">
                                         Vervang of installeer nieuwe dakgoten om regenwater effectief af te voeren.
                                     </p>
-                                    <p className="text-sm font-medium mt-1">€1.200</p>
+                                    <p className="text-sm font-medium mt-1">≈ €1.200</p>
                                 </div>
                             </div>
                         </div>
 
                         <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.solarPanels ? "border-primary border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.solarPanels ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => toggleExtra("solarPanels")}
                         >
                             <div className="flex gap-4">
@@ -371,13 +371,13 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                     <p className="text-sm text-muted-foreground">
                                         Profiteer van duurzame energie door zonnepanelen te laten installeren.
                                     </p>
-                                    <p className="text-sm font-medium mt-1">€5.000</p>
+                                    <p className="text-sm font-medium mt-1">≈ €5.000</p>
                                 </div>
                             </div>
                         </div>
 
                         <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.skylights ? "border-primary border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.skylights ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => toggleExtra("skylights")}
                         >
                             <div className="flex gap-4">
@@ -391,13 +391,13 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                     <p className="text-sm text-muted-foreground">
                                         Laat meer natuurlijk licht binnen met hoogwaardige dakramen.
                                     </p>
-                                    <p className="text-sm font-medium mt-1">€1.800</p>
+                                    <p className="text-sm font-medium mt-1">≈ €1.800</p>
                                 </div>
                             </div>
                         </div>
 
                         <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.facadeCladding ? "border-primary border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.facadeCladding ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => toggleExtra("facadeCladding")}
                         >
                             <div className="flex gap-4">
@@ -411,7 +411,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                     <p className="text-sm text-muted-foreground">
                                         Vernieuw de uitstraling van uw woning met moderne gevelbekleding.
                                     </p>
-                                    <p className="text-sm font-medium mt-1">€3.200</p>
+                                    <p className="text-sm font-medium mt-1">≈ €3.200</p>
                                 </div>
                             </div>
                         </div>
@@ -467,7 +467,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                     <Separator className="my-2" />
                                     <div className="flex justify-between font-medium">
                                         <span>Totaal extra's:</span>
-                                        <span>€{calculateExtrasCost(formData.extras.insulation, formData.extras.gutters, formData.extras.solarPanels, formData.extras.skylights, formData.extras.facadeCladding).toLocaleString()}</span>
+                                        <span>€{calculateExtrasCost(formData.roofSize, formData.extras.insulation, formData.extras.gutters, formData.extras.solarPanels, formData.extras.skylights, formData.extras.facadeCladding).toLocaleString()}</span>
                                     </div>
                                 </>
                             )}
@@ -475,7 +475,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                 </div>
             </CardContent>
             <CardFooter className="flex justify-end">
-                <Button onClick={handleStep1Complete} disabled={!formData.address}>
+                <Button onClick={handleStep1Complete} disabled={!formData.address} variant="odiyoo_gradient">
                     Volgende
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>

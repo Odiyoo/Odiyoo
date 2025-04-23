@@ -18,7 +18,7 @@ import Sidebar from "./Sidebar"
 import StepOne from "./StepOne"
 import StepTwo from "./StepTwo"
 import { calculateInsulationCost, calculateQuoteForContractor, ContractorQuote, ExtendedContractor } from "@/domain/contractors"
-import { displayPrice } from "@/domain/finance"
+import { displayPrice, taxPercentage, taxPercentageDisplay } from "@/domain/finance"
 
 export type FormData = {
   address: string,
@@ -307,10 +307,8 @@ export default function QuotePage() {
 
   // Update the generateQuote function to use the selected contractor's pricing
   const generateQuote = async () => {
-    console.log("Generating quote");
     const contractor = contractors.find((c) => c.id === formData.selectedContractor)
     const quote = contractorQuotes[formData.selectedContractor]
-    console.log("Gonna set quote data now", contractor, quote);
     setQuoteData({
         ...quote,
         contractor: contractor.name,
@@ -323,6 +321,10 @@ export default function QuotePage() {
       nextStep();
     }
   }, [quoteData])
+
+  const sendQuoteToCustomer = () => {
+
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -371,35 +373,35 @@ export default function QuotePage() {
                 >
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
-                      step >= 1 ? "border-primary bg-primary text-white" : "border-gray-300"
+                      step >= 1 ? "border-white bg-odiyoo text-white" : "border-gray-300"
                     }`}
                   >
                     {step > 1 ? <Check className="h-5 w-5" /> : 1}
                   </div>
                   <span className="mt-2 text-sm">Gegevens</span>
                 </div>
-                <div className={`h-1 w-full max-w-[80px] ${step >= 2 ? "bg-primary" : "bg-gray-300"}`} />
+                <div className={`h-1 w-full max-w-[80px] ${step >= 2 ? "bg-odiyoo" : "bg-gray-300"}`} />
                 <div
                   className={`flex flex-col items-center ${canAccessStep(2) ? "cursor-pointer" : ""}`}
                   onClick={() => goToStep(2)}
                 >
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
-                      step >= 2 ? "border-primary bg-primary text-white" : "border-gray-300"
+                      step >= 2 ? "border-white bg-odiyoo text-white" : "border-gray-300"
                     }`}
                   >
                     {step > 2 ? <Check className="h-5 w-5" /> : 2}
                   </div>
                   <span className="mt-2 text-sm">Aannemers</span>
                 </div>
-                <div className={`h-1 w-full max-w-[80px] ${step >= 3 ? "bg-primary" : "bg-gray-300"}`} />
+                <div className={`h-1 w-full max-w-[80px] ${step >= 3 ? "bg-odiyoo" : "bg-gray-300"}`} />
                 <div
                   className={`flex flex-col items-center ${canAccessStep(3) ? "cursor-pointer" : ""}`}
                   onClick={() => goToStep(3)}
                 >
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
-                      step >= 3 ? "border-primary bg-primary text-white" : "border-gray-300"
+                      step >= 3 ? "border-white bg-odiyoo text-white" : "border-gray-300"
                     }`}
                   >
                     3
@@ -423,7 +425,7 @@ export default function QuotePage() {
               {step === 3 && quoteGenerated && (
                 <>
                   <CardHeader>
-                    <CardTitle>Jouw dakofferte</CardTitle>
+                    <CardTitle className="text-odiyoo">Jouw dakofferte</CardTitle>
                     <CardDescription>Hier is je directe offerte op basis van de verstrekte informatie.</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -456,18 +458,18 @@ export default function QuotePage() {
                           <span className="font-medium">€{displayPrice(quoteData.totalPrice).toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>BTW (6%):</span>
+                          <span>BTW ({taxPercentageDisplay}):</span>
                           <span className="font-medium">
-                            €{displayPrice(quoteData.totalPrice * 0.06).toLocaleString()}
+                            €{displayPrice(quoteData.totalPrice * taxPercentage).toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between font-bold">
                           <span>Totaal (incl. BTW):</span>
-                          <span>€{displayPrice(quoteData.totalPrice * 1.06).toLocaleString()}</span>
+                          <span>€{displayPrice(quoteData.totalPrice * (1 + taxPercentage)).toLocaleString()}</span>
                         </div>
                       </div>
                       <div className="mt-6 rounded-lg bg-white p-4">
-                        <h4 className="font-medium">Projectdetails:</h4>
+                        <h4 className="font-bold">Projectdetails:</h4>
                         <ul className="mt-2 space-y-2">
                           <li className="flex justify-between">
                             <span>Geschatte duur:</span>
@@ -561,7 +563,7 @@ export default function QuotePage() {
                               required
                             />
                           </div>
-                          <Button type="submit" className="w-full">
+                          <Button variant="odiyoo_gradient" type="submit" className="w-full" onClick={sendQuoteToCustomer}>
                             Offerte ontvangen
                           </Button>
                         </form>

@@ -5,3 +5,6 @@ export const displayPrice = (price: number): string => {
         maximumFractionDigits: 2,
     });
 }
+
+export const taxPercentageDisplay = "6%";
+export const taxPercentage = 0.06;
