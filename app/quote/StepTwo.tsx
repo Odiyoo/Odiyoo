@@ -401,6 +401,9 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                             <div>
                                                 <h4 className="font-medium mb-2">Beoordelingen</h4>
                                                 <div className="space-y-3">
+                                                    {contractor.reviews.length === 0 && (
+                                                        <p className="text-muted-foreground text-sm">Geen beoordelingen</p>
+                                                    )}
                                                     {contractor.reviews.map((review, index) => (
                                                         <div key={index} className="text-sm">
                                                             <div className="flex items-center">
