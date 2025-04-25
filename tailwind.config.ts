@@ -81,11 +81,13 @@ const config = {
     },
   },
   plugins: [
-    require("tailwindcss-animate"),
     function ({ addUtilities }) {
       addUtilities({
         '.bg-odiyoo-gradient': {
           background: 'var(--odiyoo-gradient)',
+        },
+        '.bg-odiyoo-gradient-alt': {
+          background: 'var(--odiyoo-gradient-alt)',
         },
       });
     },

@@ -29,7 +29,7 @@ export default function Navbar() {
                   </nav>
                   <div className="flex items-center gap-4">
                     <Link href="/quote" className="hidden md:block">
-                      <Button>Directe Offerte</Button>
+                      <Button variant="odiyoo_gradient">Offerte Aanvragen</Button>
                     </Link>
                     <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
                       Inloggen
