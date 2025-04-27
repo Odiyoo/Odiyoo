@@ -268,7 +268,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                 <div
                                     className="cursor-pointer"
                                     onClick={() => {
-                                        selectContractor(contractor.id)
+                                        selectContractor(contractors.find((contr) => contr.id === contractor.id))
                                         toggleContractorExpand(contractor.id)
                                     }}
                                 >

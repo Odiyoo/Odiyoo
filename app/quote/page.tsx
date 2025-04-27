@@ -19,6 +19,7 @@ import StepOne from "./StepOne"
 import StepTwo from "./StepTwo"
 import { calculateInsulationCost, calculateQuoteForContractor, ContractorQuote, ExtendedContractor } from "@/domain/contractors"
 import { displayPrice, taxPercentage, taxPercentageDisplay } from "@/domain/finance"
+import { sendQuoteToCustomer } from "@/domain/mail"
 
 export type FormData = {
   address: string,
@@ -26,7 +27,7 @@ export type FormData = {
   roofType: "dakpannen" | "leien",
   roofColor: string,
   additionalServices: [],
-  selectedContractor: string,
+  selectedContractor: ExtendedContractor | null,
   extras: {
     insulation: boolean,
     gutters: boolean,
@@ -66,7 +67,7 @@ export default function QuotePage() {
     totalPrice: 0,
     estimatedDuration: "",
   })
-  const [contractorQuotes, setContractorQuotes] = useState<ContractorQuote[]>({}) // array instead of object?
+  const [contractorQuotes, setContractorQuotes] = useState<Record<string, ContractorQuote>>({}) // array instead of object?
   const [expandedSection, setExpandedSection] = useState("address")
   const [emailSubmitted, setEmailSubmitted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -92,12 +93,12 @@ export default function QuotePage() {
     }
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleExtrasChange = (name: string, checked) => {
+  const handleExtrasChange = (name: string, checked: boolean) => {
     setFormData((prev) => ({
       ...prev,
       extras: {
@@ -264,22 +265,37 @@ export default function QuotePage() {
 
     const contractorData = await fetchContractors();
 
-    const quotes: Record<string, any> = {};
-    console.log("iterating quotes");
+    const quotes: Record<string, ContractorQuote> = {};
+
     contractorData.forEach((contractor: ExtendedContractor) => {
       quotes[contractor.id] = calculateQuoteForContractor(formData.roofSize, contractor, formData.roofType, formData.extras.insulation, formData.extras.gutters, formData.extras.solarPanels, formData.extras.skylights, formData.extras.facadeCladding)
     });
 
-    setContractorQuotes(quotes)
+    setContractorQuotes(quotes);
     setContractorsLoading(false);
   }
 
   // Handle email submission
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
     if (formData.email) {
       setEmailSubmitted(true)
       setShowConfetti(true)
+      
+      await fetch(
+        '/api/mail/send-quote',
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            formData,
+            quoteData,
+          })
+        }
+      ).then((response) => {console.log(response)})
+
       // Reset confetti after 5 seconds
       setTimeout(() => {
         setShowConfetti(false)
@@ -307,8 +323,8 @@ export default function QuotePage() {
 
   // Update the generateQuote function to use the selected contractor's pricing
   const generateQuote = async () => {
-    const contractor = contractors.find((c) => c.id === formData.selectedContractor)
-    const quote = contractorQuotes[formData.selectedContractor]
+    const contractor = formData.selectedContractor!
+    const quote = contractorQuotes[contractor.id]
     setQuoteData({
         ...quote,
         contractor: contractor.name,
@@ -321,10 +337,6 @@ export default function QuotePage() {
       nextStep();
     }
   }, [quoteData])
-
-  const sendQuoteToCustomer = () => {
-
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -418,7 +430,7 @@ export default function QuotePage() {
 
               {/* Step 2 - Contractor selection */}
               {step === 2 && (
-                <StepTwo handleStep2Complete={handleStep2Complete} contractors={contractors} step={step} prevStep={prevStep} nextStep={nextStep} formData={formData} setFormData={setFormData} quoteData={quoteData} setContractorQuotes={setContractorQuotes} isContractorsLoading={isContractorsLoading} contractorQuotes={contractorQuotes} openLightbox={openLightbox}/>
+                <StepTwo handleStep2Complete={handleStep2Complete} contractors={contractors} step={step} prevStep={prevStep} nextStep={nextStep} formData={formData} setFormData={setFormData} quoteData={quoteData} isContractorsLoading={isContractorsLoading} contractorQuotes={contractorQuotes} openLightbox={openLightbox}/>
               )}
 
               {/* Step 3 - Quote */}
@@ -450,7 +462,7 @@ export default function QuotePage() {
                         </div>
                         {formData.extras.insulation && <div className="flex justify-between">
                           <span>Isolatie:</span>
-                          <span className="font-medium">€{displayPrice(calculateInsulationCost(formData.roofSize, contractors.find((c) => c.id == formData.selectedContractor))).toLocaleString()}</span>
+                          <span className="font-medium">€{displayPrice(calculateInsulationCost(formData.roofSize, formData.selectedContractor)).toLocaleString()}</span>
                         </div>}
                         <Separator/>
                         <div className="flex justify-between">
@@ -563,7 +575,7 @@ export default function QuotePage() {
                               required
                             />
                           </div>
-                          <Button variant="odiyoo_gradient" type="submit" className="w-full" onClick={sendQuoteToCustomer}>
+                          <Button variant="odiyoo_gradient" type="submit" className="w-full">
                             Offerte ontvangen
                           </Button>
                         </form>
