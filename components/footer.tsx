@@ -1,5 +1,6 @@
 import { BTW, BUSINESS_NAME, CUSTOMER_SUPPORT_MAIL, CUSTOMER_SUPPORT_PHONE } from "@/domain/business";
 import Link from "next/link";
+import { Mail, MailOpen, PhoneCall, BriefcaseBusiness } from "lucide-react"
 
 export default function Footer() {
     return (
@@ -10,11 +11,13 @@ export default function Footer() {
                         <h3 className="mb-4 text-lg font-bold text-white">We komen graag met je in contact</h3>
                         <ul className="space-y-2">
                             <li className="font-medium">{BUSINESS_NAME}</li>
-                            <li>BTW: {BTW}</li>
-                            <li>Email: {CUSTOMER_SUPPORT_MAIL}</li>
-                            <li>Telefoon: {CUSTOMER_SUPPORT_PHONE}</li>
-                            <li className="mt-4">
-                                <span className="font-medium block">Openingstijden:</span>
+                            <li className="flex flex-row gap-2"><BriefcaseBusiness/> {BTW}</li>
+                            <li className="flex flex-row gap-2"><MailOpen/> <a href={`mailto:${CUSTOMER_SUPPORT_MAIL}`}>{CUSTOMER_SUPPORT_MAIL}</a></li>
+                            <li className="flex flex-row gap-2"><PhoneCall/> <a href={`tel:${CUSTOMER_SUPPORT_PHONE}`}>{CUSTOMER_SUPPORT_PHONE}</a></li>
+                        </ul>
+                        <ul>
+                            <li className="mt-8">
+                                <span className="font-bold block">Openingstijden:</span>
                                 <span className="block">Maandag - Vrijdag: 07.30 - 17.00</span>
                                 <span className="block">Zaterdag: 08.00 - 12.30</span>
                             </li>
