@@ -17,10 +17,10 @@ export default function Navbar() {
                     <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground">
                       Functies
                     </Link>
-                    <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                    <Link href="#hoe-het-werkt" className="text-sm font-medium text-muted-foreground hover:text-foreground">
                       Hoe het werkt
                     </Link>
-                    <Link href="#testimonials" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                    <Link href="#getuigenissen" className="text-sm font-medium text-muted-foreground hover:text-foreground">
                       Getuigenissen
                     </Link>
                     <Link href="/faq" className="text-sm font-medium text-muted-foreground hover:text-foreground">

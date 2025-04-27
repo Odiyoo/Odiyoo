@@ -20,7 +20,6 @@ import {
 import { Button } from "@/components/ui/button"
 import Navbar from "@/components/navbar"
 import { Separator } from "@/components/ui/separator"
-import { list } from "@vercel/blob"
 import { Suspense, useEffect, useState } from "react"
 import Image from "next/image"
 import Footer from "@/components/footer"
@@ -98,13 +97,13 @@ export default function LandingPage() {
           <div className="container">
             <div className="max-w-3xl mx-auto text-center space-y-6">
               <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-primary mb-4">
-                <Link href="#testimonials">
+                <Link href="#getuigenissen">
                   <b>400+</b>&nbsp;tevreden klanten 🇧🇪
                 </Link>
               </div>
               <p className="text-xl text-odiyoo uppercase">Professionele Dak- en Gevelreiniging</p>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                Uw dak, Onze <span className="italic px-1 bg-odiyoo text-white">Expertise</span>
+                Uw dak, onze <span className="italic px-1 bg-odiyoo text-white">Expertise</span>
               </h1>
               <p className="text-xl text-muted-foreground">
                 Welkom bij Odiyoo! Wij zorgen voor hoogwaardige dak- en gevelreiniging, terrasreiniging en meer, waar u ook woont in België.
@@ -128,12 +127,12 @@ export default function LandingPage() {
                 <p className="text-lg text-odiyoo uppercase">Leuven</p>
                 <p className="text-lg text-odiyoo font-bold">Margriet V.</p>
                 <p className="my-4">“Wij zijn zeer tevreden met het werk dat Odiyoo aan ons huis heeft uitgevoerd. Uw team was beleefd en vriendelijk en al het afval werd dagelijks afgevoerd. Wij raden u ten zeerste aan vanwege de uitstekende service en de goede prijs-kwaliteitverhouding.”</p>
-                <div className="flex justify-center mb-3">
+                <div className="flex mb-3">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                   ))}
                 </div>
-                <Link href="#testimonials">
+                <Link href="#getuigenissen">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto mt-6 border-odiyoo">
                     Ervaringen van onze klanten
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -147,9 +146,9 @@ export default function LandingPage() {
           </div>
         </section>
         <section className="py-10 px-10 grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
-          <div>
+          <div className="flex justify-center">
             <Suspense fallback={<p>Loading video...</p>}>
-              <VideoComponent url="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/Wiezijnwij.mp4" isMuted autoPlay height="500px"/>
+              <VideoComponent url="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/Wiezijnwij.mp4" isMuted autoPlay loop/>
             </Suspense>
           </div>
           <div>
@@ -178,7 +177,7 @@ export default function LandingPage() {
         <section className="bg-gray-200 py-20">
           <div className="container">
             <div className="max-w-3xl mx-auto text-center space-y-6">
-              <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-primary mb-4">
+              <div className="md:inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-primary mb-4">
                 <b>Gratis</b>&nbsp;gegenereerde offertes van meerdere aannemers 🇧🇪
               </div>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
@@ -198,7 +197,7 @@ export default function LandingPage() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="#how-it-works">
+                <Link href="#hoe-het-werkt">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto">
                     Ontdek hoe het werkt
                   </Button>
@@ -239,10 +238,10 @@ export default function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section className="p-20">
+        <section className="p-20 px-5 md:px-20" id="hoe-het-werkt">
           <h1 className="text-lg text-odiyoo font-bold">Hoe werkt het?</h1>
           <Separator className="w-20 h-1 my-4" />
-          <div className="flex flex-row justify-between overflow-x-scroll">
+          <div className="flex flex-row justify-between items-start overflow-x-scroll gap-8">
             <div className="flex gap-4 flex-col justify-center w-40">
               <img src="https://odiyoo.com/cdn/shop/files/49.png?v=1738246105&width=535" alt="Telefoon" className="h-24 w-24" />
               <h3 className="text-md text-odiyoo font-bold">Stap 1 &gt; Offerteaanvraag</h3>
@@ -309,7 +308,7 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-            <div className="pt-20 flex flex-col justify-evenly md:flex-row">
+            <div className="pt-20 flex flex-col justify-evenly gap-4 md:gap-0 md:flex-row">
               <div>
                 <div className="flex flex-row gap-2">
                   <CheckSquare2 className="text-odiyoo" />
@@ -362,7 +361,7 @@ export default function LandingPage() {
               </Button>
             </Link>
           </div>
-          <div>
+          <div className="flex justify-center md:block">
             <Image
               src="https://odiyoo.com/cdn/shop/files/Kopie_van_Logo_banner_mail_1200_x_628_px_1_f4af9cde-5f87-49af-a587-d3abdee31d10.png?v=1738311337&width=535"
               width={500}
@@ -374,7 +373,7 @@ export default function LandingPage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-20 bg-gray-200">
+        <section id="getuigenissen" className="py-20 bg-gray-200">
           <div className="container">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-bold sm:text-4xl">Wat onze klanten zeggen</h2>
@@ -518,7 +517,7 @@ export default function LandingPage() {
       </div>
 
       {/* Company Key Features */}
-      <section className="bg-gray-100 flex flex-row gap-4 justify-evenly py-10">
+      <section className="bg-gray-100 grid grid-cols-3 gap-4 justify-evenly items-start py-10 px-5">
         <div className="flex flex-col items-center justify-center">
           <Image
             src="https://odiyoo.com/cdn/shop/files/1_51c0d3ff-4670-4338-95df-ef59e2ca04ca.png?v=1738305706&width=535"
@@ -526,28 +525,28 @@ export default function LandingPage() {
             height={80}
             alt="Support afbeelding"
           />
-          <h1 className="text-odiyoo text-lg font-bold my-2">7/7 klantenservice</h1>
-          <p className="text-md">Altijd bereikbaar, elke dag van de week</p>
+          <h1 className="text-odiyoo text-lg font-bold my-2 text-center">7/7 klantenservice</h1>
+          <p className="text-md hidden md:block">Altijd bereikbaar, elke dag van de week</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <Image
-            src="https://odiyoo.com/cdn/shop/files/1_51c0d3ff-4670-4338-95df-ef59e2ca04ca.png?v=1738305706&width=535"
+            src="https://odiyoo.com/cdn/shop/files/2_1b58440c-a952-4169-830b-1cbeef818b30.png?v=1738305706&width=535"
             width={80}
             height={80}
             alt="Support afbeelding"
           />
-          <h1 className="text-odiyoo text-lg font-bold my-2">95% tevreden klanten</h1>
-          <p className="text-md">Uitstekende klanttevredenheid</p>
+          <h1 className="text-odiyoo text-lg font-bold my-2 text-center">95% tevreden klanten</h1>
+          <p className="text-md hidden md:block">Uitstekende klanttevredenheid</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <Image
-            src="https://odiyoo.com/cdn/shop/files/1_51c0d3ff-4670-4338-95df-ef59e2ca04ca.png?v=1738305706&width=535"
+            src="https://odiyoo.com/cdn/shop/files/4_33a4d3a4-88ad-473b-bfc0-dd9346b8f309.png?v=1738305706&width=535"
             width={80}
             height={80}
             alt="Support afbeelding"
           />
-          <h1 className="text-odiyoo text-lg font-bold my-2">Garantie op werk</h1>
-          <p className="text-md">Kwaliteit verzekerd</p>
+          <h1 className="text-odiyoo text-lg font-bold my-2 text-center">Garantie op werk</h1>
+          <p className="text-md hidden md:block">Kwaliteit verzekerd</p>
         </div>
       </section>
       <Footer />
