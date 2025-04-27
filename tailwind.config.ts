@@ -53,6 +53,11 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        odiyoo: {
+          DEFAULT: "hsl(var(--odiyoo))",
+          foreground: "hsl(var(--odiyoo-foreground))",
+          gradient: "var(--odiyoo-gradient)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -75,7 +80,18 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.bg-odiyoo-gradient': {
+          background: 'var(--odiyoo-gradient)',
+        },
+        '.bg-odiyoo-gradient-alt': {
+          background: 'var(--odiyoo-gradient-alt)',
+        },
+      });
+    },
+  ],
 } satisfies Config
 
 export default config
