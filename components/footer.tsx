@@ -1,6 +1,7 @@
 import { BTW, BUSINESS_NAME, CUSTOMER_SUPPORT_MAIL, CUSTOMER_SUPPORT_PHONE } from "@/domain/business";
 import Link from "next/link";
 import { Mail, MailOpen, PhoneCall, BriefcaseBusiness } from "lucide-react"
+import FullLogoWhite from "./full-logo-white";
 
 export default function Footer() {
     return (
@@ -79,7 +80,8 @@ export default function Footer() {
                         </ul>
                     </div>
                 </div>
-                <div className="mt-8 border-t border-gray-800 pt-8 text-center">
+                <div className="flex flex-col md:flex-row gap-4 items-center mt-8 border-t border-gray-800 pt-8">
+                    <FullLogoWhite/>
                     <p>&copy; {new Date().getFullYear()} {BUSINESS_NAME} Alle rechten voorbehouden.</p>
                 </div>
             </div>

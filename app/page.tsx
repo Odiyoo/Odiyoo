@@ -24,6 +24,7 @@ import { Suspense, useEffect, useState } from "react"
 import Image from "next/image"
 import Footer from "@/components/footer"
 import { BeforeAfterSlider } from "@/components/before-after-slider"
+import FullLogoBlack from "@/components/full-logo-black"
 
 const floatingAnimation = `
   @keyframes float {
@@ -82,7 +83,7 @@ export default function LandingPage() {
 
       <main className="flex-1">
         {/* Earthy Green Element */}
-        <div className="bg-[#4a6741] text-white py-3">
+        <div className="bg-odiyoo-secondary text-white py-3">
           <div className="container">
             <div className="flex items-center justify-center gap-2">
               <div className="flex items-center transform animate-bounce">
@@ -96,21 +97,21 @@ export default function LandingPage() {
         <section className="bg-gradient-to-b from-white to-gray-50 py-20 pb-2">
           <div className="container">
             <div className="max-w-3xl mx-auto text-center space-y-6">
-              <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-primary mb-4">
+              <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-odiyoo mb-4">
                 <Link href="#getuigenissen">
                   <b>400+</b>&nbsp;tevreden klanten 🇧🇪
                 </Link>
               </div>
               <p className="text-xl text-odiyoo uppercase">Professionele Dak- en Gevelreiniging</p>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                Uw dak, onze <span className="italic px-1 bg-odiyoo text-white">Expertise</span>
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl heading-typography">
+                Uw dak, onze <span className="italic px-1 bg-odiyoo-secondary text-white">Expertise</span>
               </h1>
               <p className="text-xl text-muted-foreground">
                 Welkom bij Odiyoo! Wij zorgen voor hoogwaardige dak- en gevelreiniging, terrasreiniging en meer, waar u ook woont in België.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row justify-center">
                 <Link href="/quote">
-                  <Button size="lg" variant="odiyoo_gradient" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto">
                     Offerte aanvragen
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -122,7 +123,7 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-24 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-24 mb-8 pt-8 border-t border-gray-200">
               <div className="flex flex-col justify-center">
                 <p className="text-lg text-odiyoo uppercase">Leuven</p>
                 <p className="text-lg text-odiyoo font-bold">Margriet V.</p>
@@ -133,7 +134,7 @@ export default function LandingPage() {
                   ))}
                 </div>
                 <Link href="#getuigenissen">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto mt-6 border-odiyoo">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto mt-6">
                     Ervaringen van onze klanten
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -166,7 +167,7 @@ export default function LandingPage() {
             </p>
             <p>{Array(5).map(() => <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />)}</p>
             <Link href="/quote">
-              <Button size="lg" variant="odiyoo_gradient" className="w-full sm:w-auto mt-6 border-odiyoo">
+              <Button size="lg" className="w-full sm:w-auto mt-6">
                 Offerte aanvragen
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -177,7 +178,7 @@ export default function LandingPage() {
         <section className="bg-gray-200 py-20">
           <div className="container">
             <div className="max-w-3xl mx-auto text-center space-y-6">
-              <div className="md:inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-primary mb-4">
+              <div className="md:inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-odiyoo mb-4">
                 <b>Gratis</b>&nbsp;gegenereerde offertes van meerdere aannemers 🇧🇪
               </div>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
@@ -192,7 +193,7 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col gap-4 sm:flex-row justify-center">
                 <Link href="/quote">
-                  <Button size="lg" variant="odiyoo_gradient" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto">
                     Offerte aanvragen
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -355,7 +356,7 @@ export default function LandingPage() {
             </p>
             <p>{Array(5).map(() => <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />)}</p>
             <Link href="/quote">
-              <Button size="lg" variant="odiyoo_gradient" className="w-full sm:w-auto mt-6 border-odiyoo">
+              <Button size="lg" className="w-full sm:w-auto mt-6 border-odiyoo">
                 Offerte aanvragen
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -495,7 +496,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-8">
               <Link href="/quote">
-                <Button size="lg" variant="secondary">
+                <Button size="lg">
                   Ontvang je gratis offerte
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -509,8 +510,7 @@ export default function LandingPage() {
       <div className="bg-gray-100 py-4">
         <div className="container text-center">
           <div className="flex items-center justify-center gap-2">
-            <Home className="h-5 w-5 text-primary" />
-            <span className="text-lg font-bold">Odiyoo</span>
+            <FullLogoBlack/>
           </div>
           <p className="text-sm text-muted-foreground mt-1">Dakoffertes eenvoudig, snel en nauwkeurig maken.</p>
         </div>

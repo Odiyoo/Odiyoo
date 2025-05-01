@@ -20,6 +20,7 @@ import StepTwo from "./StepTwo"
 import { calculateInsulationCost, calculateQuoteForContractor, ContractorQuote, ExtendedContractor } from "@/domain/contractors"
 import { displayPrice, taxPercentage, taxPercentageDisplay } from "@/domain/finance"
 import { sendQuoteToCustomer } from "@/domain/mail"
+import Navbar from "@/components/navbar"
 
 export type FormData = {
   address: string,
@@ -340,28 +341,7 @@ export default function QuotePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white py-4 shadow-sm">
-        <div className="container flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">Odiyoo</span>
-          </Link>
-          <nav className="hidden space-x-6 md:flex">
-            <Link href="/#features" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Functies
-            </Link>
-            <Link href="/#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Hoe het werkt
-            </Link>
-            <Link href="/#testimonials" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Getuigenissen
-            </Link>
-            <Link href="/faq" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              FAQ
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar/>
 
       <main className="container py-12">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -443,7 +423,7 @@ export default function QuotePage() {
                   <CardContent>
                     <div className="rounded-lg bg-primary/5 p-6">
                       <div className="mb-6 text-center">
-                        <h3 className="text-2xl font-bold">€{displayPrice(quoteData.totalPrice).toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold text-odiyoo">€{displayPrice(quoteData.totalPrice).toLocaleString()}</h3>
                         <p className="text-muted-foreground">Geschatte totale kosten</p>
                       </div>
                       <Separator className="my-4" />
@@ -475,13 +455,13 @@ export default function QuotePage() {
                             €{displayPrice(quoteData.totalPrice * taxPercentage).toLocaleString()}
                           </span>
                         </div>
-                        <div className="flex justify-between font-bold">
+                        <div className="flex justify-between font-bold text-odiyoo">
                           <span>Totaal (incl. BTW):</span>
                           <span>€{displayPrice(quoteData.totalPrice * (1 + taxPercentage)).toLocaleString()}</span>
                         </div>
                       </div>
                       <div className="mt-6 rounded-lg bg-white p-4">
-                        <h4 className="font-bold">Projectdetails:</h4>
+                        <h4 className="font-bold text-odiyoo">Projectdetails:</h4>
                         <ul className="mt-2 space-y-2">
                           <li className="flex justify-between">
                             <span>Geschatte duur:</span>
@@ -575,7 +555,7 @@ export default function QuotePage() {
                               required
                             />
                           </div>
-                          <Button variant="odiyoo_gradient" type="submit" className="w-full">
+                          <Button type="submit" className="w-full">
                             Offerte ontvangen
                           </Button>
                         </form>

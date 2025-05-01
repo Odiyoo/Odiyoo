@@ -9,15 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-odiyoo text-primary-foreground transition-opacity hover:opacity-9",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-background text-odiyoo hover:bg-accent",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-odiyoo-secondary text-secondary-foreground hover:bg-odiyoo-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-odiyoo-secondary underline-offset-4 hover:underline",
         odiyoo_gradient: "bg-odiyoo-gradient text-primary-foreground hover:bg-odiyoo-gradient-alt transition hover:opacity-80",
       },
       size: {

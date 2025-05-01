@@ -475,7 +475,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                 </div>
             </CardContent>
             <CardFooter className="flex justify-end">
-                <Button onClick={handleStep1Complete} disabled={!formData.address} variant="odiyoo_gradient">
+                <Button onClick={handleStep1Complete} disabled={!formData.address}>
                     Volgende
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>

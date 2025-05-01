@@ -54,8 +54,10 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         odiyoo: {
-          DEFAULT: "hsl(var(--odiyoo))",
-          foreground: "hsl(var(--odiyoo-foreground))",
+          DEFAULT: "var(--odiyoo)",
+          foreground: "var(--odiyoo-foreground)",
+          secondary: "var(--odiyoo-secondary)",
+          tertiary: "var(--odiyoo-tertiary)",
           gradient: "var(--odiyoo-gradient)",
         },
       },
@@ -78,6 +80,10 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        IBMPlexSerif: ['IBM Plex Serif', 'sans-serif'],
+        DMSans: ['DM Sans', 'sans-serif'],
+      }
     },
   },
   plugins: [
