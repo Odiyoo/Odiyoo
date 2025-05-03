@@ -4,7 +4,7 @@ export default function FullLogoWhite(props: any) {
     return (
         <Image
             alt="Logo van Odiyoo"
-            src="/branding/svg/Odiyoo_logo_Wit.svg"
+            src="/branding/SVG/Odiyoo_logo_Wit.svg"
             width={120}
             height={120}
             {...props}
