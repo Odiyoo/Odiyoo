@@ -242,7 +242,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                     </div>
                 </div>
                 <div className="items-center flex justify-end">
-                    <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor} className="bg-odiyoo-gradient">
+                    <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor}>
                         Genereer offerte
                         <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
@@ -449,7 +449,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Terug
                 </Button>
-                <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor} className="bg-odiyoo-gradient">
+                <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor}>
                     Genereer offerte
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
