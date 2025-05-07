@@ -19,17 +19,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ExtendedContractor } from "@/domain/contractors"
 import moment from "moment"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
 // Sample contractors data
 const contractorsData = [
@@ -103,9 +92,9 @@ export default function ContractorsPage() {
   })
 
   const fetchContractors = async () => {
-
+    
     const res = await fetch("/api/contractors", {
-      method: "GET",
+        method: "GET",
     });
 
     const result = await res.json();
@@ -149,13 +138,13 @@ export default function ContractorsPage() {
       <main className="container py-12">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Aannemers</h1>
-            <p className="mt-2 text-muted-foreground">Beheer alle aannemers op het platform.</p>
+            <h1 className="text-3xl font-bold">Offertes</h1>
+            <p className="mt-2 text-muted-foreground">Beheer alle offertes op het platform.</p>
           </div>
           <Link href="/admin/contractors/add">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Aannemer toevoegen
+              Offerte toevoegen
             </Button>
           </Link>
         </div>
@@ -163,7 +152,7 @@ export default function ContractorsPage() {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle>Aannemers overzicht</CardTitle>
+              <CardTitle>Offerte overzicht</CardTitle>
               <div className="relative w-64">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -174,20 +163,20 @@ export default function ContractorsPage() {
                 />
               </div>
             </div>
-            <CardDescription>Bekijk en beheer alle aannemers op het platform.</CardDescription>
+            <CardDescription>Bekijk en beheer alle offertes op het platform.</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" onValueChange={setActiveTab}>
               <TabsList className="mb-4">
-                <TabsTrigger value="all">Alle aannemers</TabsTrigger>
-                <TabsTrigger value="active">Actief</TabsTrigger>
-                <TabsTrigger value="inactive">Inactief</TabsTrigger>
+                <TabsTrigger value="all">Alle offertes</TabsTrigger>
+                <TabsTrigger value="active">Dakreiniging</TabsTrigger>
+                <TabsTrigger value="inactive">Dakrenovatie</TabsTrigger>
               </TabsList>
               <div className="rounded-md border">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Aannemer</TableHead>
+                      <TableHead>Offerte #</TableHead>
                       <TableHead>Locatie</TableHead>
                       <TableHead>Beoordeling</TableHead>
                       <TableHead>Ervaring</TableHead>
@@ -206,31 +195,30 @@ export default function ContractorsPage() {
                       filteredContractors.map((contractor) => (
                         <TableRow key={contractor.id}>
                           <TableCell>
-                            <Link href={`contractors/${contractor.id}`}>
-                              <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-100">
-                                  <img
-                                    src={contractor.profile_image || "/placeholder.svg"}
-                                    alt={contractor.name || "Afbeelding aannemer"}
-                                    className="h-full w-full object-cover"
-                                  />
-                                </div>
-                                <div>
-                                  <div className="font-medium">{contractor.name}</div>
-                                  <div className="text-xs text-muted-foreground">ID: {contractor.id}</div>
-                                </div>
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+                                <img
+                                  src={contractor.profile_image || "/placeholder.svg"}
+                                  alt={contractor.name}
+                                  className="h-full w-full object-cover"
+                                />
                               </div>
-                            </Link>
+                              <div>
+                                <div className="font-medium">{contractor.name}</div>
+                                <div className="text-xs text-muted-foreground">ID: {contractor.id}</div>
+                              </div>
+                            </div>
                           </TableCell>
                           <TableCell>{contractor.city}</TableCell>
                           <TableCell>{contractor.rating} / 5</TableCell>
                           <TableCell>{moment().subtract(contractor.company_start_year, 'years').year()}</TableCell>
                           <TableCell>
                             <div
-                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contractor.status
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-800"
-                                }`}
+                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                contractor.status
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
                             >
                               {contractor.status ? "Actief" : "Inactief"}
                             </div>
@@ -245,28 +233,19 @@ export default function ContractorsPage() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Acties</DropdownMenuLabel>
+                                <DropdownMenuItem>
+                                  <Eye className="mr-2 h-4 w-4" />
+                                  <span>Bekijken</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  <span>Bewerken</span>
+                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="text-red-600">
-                                      <Trash2 className="mr-2 h-4 w-4" />
-                                      <span>Verwijderen</span>
-                                    </DropdownMenuItem>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete your
-                                        account and remove your data from our servers.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction>Continue</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
+                                <DropdownMenuItem className="text-red-600">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  <span>Verwijderen</span>
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
