@@ -17,5 +17,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Verkeerde inloggegevens" }, { status: 401 });
   }
 
-  return NextResponse.json({ message: "Succesvol ingelogd" }, { status: 200 })
+  return NextResponse.json({ data: { role: response.data.user_role } }, { status: 200 })
 }

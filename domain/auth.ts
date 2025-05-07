@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createClient } from '@/util/supabase/server';
+import { AuthError } from "@supabase/supabase-js";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Ongeldig e-mailadres" }),
@@ -22,16 +23,17 @@ export { signupSchema };
 export type { SignupSchema };
 
 
-export async function login(data: LoginSchema) {
+export type LoginResponse = { error: AuthError | null, data: { user_role: string | undefined } }
+
+export async function login(credentials: LoginSchema): Promise<LoginResponse> {
     const supabase = await createClient();
     //supabase.auth.setSession()
-    const { error } = await supabase.auth.signInWithPassword(data);
-    return { error: error };
+    const { error, data } = await supabase.auth.signInWithPassword(credentials);
+    return { error, data: { user_role: data.user?.role} };
 }
 
 export async function signup(data: SignupSchema) {
     const supabase = await createClient();
-    // TODO: set firstname+lastname in public.customers
     // autoconfirm on? execute above, autoconfirm off? show text about confirmation mail sent
     const { data: signup_data, error } = await supabase.auth.signUp({ email: data.email, password: data.password });
     if (!error) {
