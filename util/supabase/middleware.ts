@@ -38,6 +38,8 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
   
+  // set cookie for 'Logged In'
+  supabaseResponse.cookies.set('is-logged-in', user ? 'true' : 'false');
 
   // if user is not authenticated, redirect to /login
   if (
