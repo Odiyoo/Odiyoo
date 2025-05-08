@@ -10,7 +10,7 @@ import { useState } from "react"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
-import { loginSchema, LoginSchema } from "@/domain/auth"
+import { LoginResponse, loginSchema, LoginSchema } from "@/domain/auth"
 import { useRouter } from 'next/navigation'
 import Navbar from "@/components/navbar"
 
@@ -39,15 +39,20 @@ export default function LoginPage() {
       },
     });
 
-    const result = await res.json();
+    const result: LoginResponse = await res.json();
     setLoading(false);
 
     if (!res.ok) {
-      form.setError("email", { message: result.message || "Inloggen mislukt" });
+      form.setError("email", { message: "Inloggen mislukt" });
     } else {
       // TODO: store user role in session? or fetch
-      router.push('/dashboard');
-      //window.location.href = "/dashboard";
+
+      // if admin redirect to admin dashboard
+      if (result.data.user_role === "admin") {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
     }
   };
 
