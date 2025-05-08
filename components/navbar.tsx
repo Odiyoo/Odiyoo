@@ -19,12 +19,10 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { createClient } from "@/util/supabase/client"
 import useIsLoggedIn from "@/lib/cookies"
 
 export default function Navbar() {
 
-  const supabase = createClient();
 
   const [isLoggedIn] = useIsLoggedIn()
 
