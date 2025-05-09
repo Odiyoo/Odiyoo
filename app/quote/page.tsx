@@ -347,12 +347,12 @@ export default function QuotePage() {
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1 max-w-5xl">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold">Ontvang meteen je dakofferte</h1>
+              <h1 className="text-3xl font-bold">Ontvang meteen je offerte</h1>
               <p className="mt-2 text-muted-foreground">
-                Vul het formulier hieronder in om direct meerdere offertes voor je dakproject te ontvangen.
+                Vul het formulier hieronder in om direct meerdere offertes voor je project te ontvangen.
               </p>
               <p className="mt-1 text-muted-foreground">
-                Het invullen duurt <b>max. 2 minuten.</b>
+                Het invullen duurt <b>max. 15 seconden.</b>
               </p>
             </div>
 

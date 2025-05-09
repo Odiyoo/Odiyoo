@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { GripVertical } from "lucide-react";
 
-export const BeforeAfterSlider = ({ image1, image2 }: {image1: string, image2: string}) => {
+export const BeforeAfterSlider = ({ image1, image2, ...props }: {image1: string, image2: string}) => {
   const [inset, setInset] = useState<number>(50);
   const [onMouseDown, setOnMouseDown] = useState<boolean>(false);
 
@@ -24,7 +24,7 @@ export const BeforeAfterSlider = ({ image1, image2 }: {image1: string, image2: s
   };
 
   return (
-    <div className="w-full lg:py-24">
+    <div className="w-full" {...props}>
       <div className="mx-auto">
         <div className="flex flex-col gap-4">
           <div className="w-full">
