@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, Suspense } from "react"
 import Link from "next/link"
 import {
   Check,
@@ -21,7 +21,6 @@ import { calculateInsulationCost, calculateQuoteForContractor, ContractorQuote, 
 import { displayPrice, taxPercentage, taxPercentageDisplay } from "@/domain/finance"
 import { sendQuoteToCustomer } from "@/domain/mail"
 import Navbar from "@/components/navbar"
-import { useSearchParams } from "next/navigation"
 
 export type FormData = {
   address: string,
@@ -78,8 +77,6 @@ export default function QuotePage() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxImages, setLightboxImages] = useState([])
   const [lightboxIndex, setLightboxIndex] = useState(0)
-
-  const searchParams = useSearchParams();
 
   // Function to check if a step is accessible
   const canAccessStep = (stepNumber: number) => {
@@ -408,7 +405,9 @@ export default function QuotePage() {
 
             <Card className="w-full">
               {step === 1 && (
-                <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData} searchParams={searchParams}/>
+                <Suspense>
+                  <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData}/>
+                </Suspense>
               )}
 
               {/* Step 2 - Contractor selection */}

@@ -15,18 +15,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/domain/auth";
 import { FreeRoofInspectionSchema, freeRoofInspectionSchema } from "@/domain/services/roofing";
-import { ReadonlyURLSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 type SidebarProps = {
     formData: FormData,
     setFormData: any,
     handleStep1Complete: any,
-    searchParams: ReadonlyURLSearchParams,
 };
 
 type Service = 'dakreiniging' | 'dakrenovatie' | null;
 
-export default function StepOne({ formData, setFormData, handleStep1Complete, searchParams }: SidebarProps) {
+export default function StepOne({ formData, setFormData, handleStep1Complete }: SidebarProps) {
 
     const [service, setService] = useState<Service>(null);
     const [isMeasurementKnown, setIsMeasurementKnown] = useState();
@@ -44,7 +43,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete, se
     })
 
     
-
+    const searchParams = useSearchParams();
     const serviceParam = searchParams.get('service');
     const measurementsParam = searchParams.get('measurements');
 
