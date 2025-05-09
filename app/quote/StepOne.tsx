@@ -15,17 +15,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/domain/auth";
 import { FreeRoofInspectionSchema, freeRoofInspectionSchema } from "@/domain/services/roofing";
-import { useSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
 type SidebarProps = {
     formData: FormData,
     setFormData: any,
     handleStep1Complete: any,
+    searchParams: ReadonlyURLSearchParams,
 };
 
 type Service = 'dakreiniging' | 'dakrenovatie' | null;
 
-export default function StepOne({ formData, setFormData, handleStep1Complete }: SidebarProps) {
+export default function StepOne({ formData, setFormData, handleStep1Complete, searchParams }: SidebarProps) {
 
     const [service, setService] = useState<Service>(null);
     const [isMeasurementKnown, setIsMeasurementKnown] = useState();
@@ -42,10 +43,23 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
         libraries: ['places']
     })
 
-    const searchParams = useSearchParams();
+    
 
     const serviceParam = searchParams.get('service');
     const measurementsParam = searchParams.get('measurements');
+
+    /* On page load */
+    useEffect(() => {
+        if (serviceParam && measurementsParam === 'true') {
+            if (serviceParam === 'dakreiniging') {
+                setSubStep('DakreinigingStep')
+            } else if (serviceParam === 'dakrenovatie') {
+                setSubStep('DakrenovatieStep')
+            }
+        } else if (serviceParam && measurementsParam === 'false') {
+            setSubStep('NoMeasurementStep')
+        }
+    }, [])    
 
     const form = useForm<FreeRoofInspectionSchema>({
         resolver: zodResolver(freeRoofInspectionSchema),
