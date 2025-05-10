@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-odiyoo text-primary-foreground transition-opacity hover:opacity-9",
+        default: "bg-odiyoo text-primary-foreground transition-opacity hover:opacity-90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:

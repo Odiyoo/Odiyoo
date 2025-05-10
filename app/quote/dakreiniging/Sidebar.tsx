@@ -5,6 +5,7 @@ import { taxPercentage, taxPercentageDisplay } from "@/domain/finance";
 import { Calendar, Clock, Mail, MapPin, Phone, Star, Store } from "lucide-react";
 import Link from "next/link";
 import { FormData } from "./Form";
+import { CUSTOMER_SUPPORT_MAIL, CUSTOMER_SUPPORT_PHONE } from "@/domain/business";
 
 type SidebarProps = {
     step: number,
@@ -169,11 +170,11 @@ export default function SidebarComponent({ step, formData, contractors, contract
                                 <div className="space-y-2 text-sm">
                                     <div className="flex items-center">
                                         <Phone className="h-4 w-4 mr-2 text-odiyoo" />
-                                        <span>(020) 123-4567</span>
+                                        <span>{CUSTOMER_SUPPORT_PHONE}</span>
                                     </div>
                                     <div className="flex items-center">
                                         <Mail className="h-4 w-4 mr-2 text-odiyoo" />
-                                        <span>support@odiyoo.be</span>
+                                        <span>{CUSTOMER_SUPPORT_MAIL}</span>
                                     </div>
                                     <div className="flex items-center">
                                         <Clock className="h-4 w-4 mr-2 text-odiyoo" />

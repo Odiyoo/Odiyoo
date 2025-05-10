@@ -82,5 +82,5 @@ export async function getCustomerCount(): Promise<number | null> {
 export async function getRecentColdQuotes(): Promise<any> {
     const supabase = await createClient();
 
-    return (await supabase.from('cold_quotes').select('id, quote_number, total_price, created_at')).data
+    return (await supabase.from('all_quotes').select('id, quote_number, total_price, created_at')).data
 }

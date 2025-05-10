@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Navbar from "@/components/admin-navbar"
 
 // Sample contractors data
 const contractorsData = [
@@ -91,31 +92,7 @@ export default function ContractorsPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="bg-white py-4 shadow-sm">
-        <div className="container flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">Odiyoo</span>
-          </Link>
-          <nav className="hidden space-x-6 md:flex">
-            <Link href="/admin" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Dashboard
-            </Link>
-            <Link href="/admin/contractors" className="text-sm font-medium text-foreground">
-              Aannemers
-            </Link>
-            <Link href="/admin/quotes" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Offertes
-            </Link>
-            <Link href="/admin/settings" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Instellingen
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium">Admin</span>
-          </div>
-        </div>
-      </header>
+      <Navbar activeLink="gebruikers"/>
 
       <main className="container py-12">
         <div className="mb-8 flex items-center justify-between">

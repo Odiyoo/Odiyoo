@@ -71,6 +71,7 @@ export default function DakreinigingForm() {
     const [lightboxImages, setLightboxImages] = useState([])
     const [lightboxIndex, setLightboxIndex] = useState(0)
     const [infoSubmitted, setInfoSubmitted] = useState(false);
+    const [isSubmissionLoading, setIsSubmissionLoading] = useState(false)
 
     const form = useForm<AppointmentRequestSchema>({
         resolver: zodResolver(appointmentRequestSchema),
@@ -85,7 +86,7 @@ export default function DakreinigingForm() {
     // quote: QuoteDakReinigingAddSchema
     const onSubmit = async (data: AppointmentRequestSchema) => {
 
-        /*const quote_res = await fetch("/api/quote", {
+        const quote_res = await fetch("/api/quote/dakreiniging", {
             method: "POST",
             body: JSON.stringify(quoteData),
             headers: {
@@ -94,25 +95,27 @@ export default function DakreinigingForm() {
         });
 
         const quote_result: any = await quote_res.json();
-        const quote_id: number = quote_result.data.id;
+        const quote_id: string = quote_result.data.id;
 
         if (!quote_res.ok) {
             form.setError("fullname", { message: "Er is iets fout gelopen." });
         }
-
-        const res = await fetch("/api/quote/ask-appointment", {
+        data.quote_id = quote_id
+        data.quote_type = 'dakrenovatie'
+        const appointment_res = await fetch("/api/quote/ask-appointment", {
             method: "POST",
-            body: JSON.stringify({...data, quote_id}),
+            body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json",
             },
         });
 
-        const result: {} = await res.json();
+        const result: { data: { appointment_id: string } } = await appointment_res.json();
 
-        if (!res.ok) {
+        if (!appointment_res.ok) {
             form.setError("fullname", { message: "Er is iets fout gelopen." });
         } else {
+            setIsSubmissionLoading(false)
             setInfoSubmitted(true)
         }
 
@@ -126,24 +129,11 @@ export default function DakreinigingForm() {
                 body: JSON.stringify({
                     formData,
                     quoteData,
+                    customerData: data,
+                    appointment_id: result.data.appointment_id
                 })
             }
-        ).then((response) => { console.log(response) })*/
-
-        /*await fetch(
-            '/api/mail/send-quote',
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    formData,
-                    quoteData,
-                })
-            }
-        ).then((response) => { console.log(response) })*/
-        setInfoSubmitted(true)
+        ).then((response) => { console.log(response) })
     };
 
     // Function to check if a step is accessible
@@ -371,7 +361,7 @@ export default function DakreinigingForm() {
                                                     formData.options.schoorsteen ||
                                                     formData.options.aquaplan) && (
                                                         <li>
-                                                            <span className="font-medium">Geselecteerde extra's:</span>
+                                                            <span className="font-medium">Geselecteerde reinigings opties:</span>
                                                             <ul className="mt-1 ml-4 list-disc text-sm">
                                                                 {formData.options.dakbedekking && <li>Dakbedekking (dakpannen of leien)</li>}
                                                                 {formData.options.gootsystemen && <li>Gootsystemen</li>}
@@ -504,9 +494,11 @@ export default function DakreinigingForm() {
                                     </div>
                                 </CardContent>
                                 <CardFooter className="flex flex-col space-y-4">
-                                    <Button variant="link" onClick={() => setStep(1)}>
-                                        Opnieuw beginnen
-                                    </Button>
+                                    <Link href="/quote">
+                                        <Button variant="link">
+                                            Opnieuw beginnen
+                                        </Button>
+                                    </Link>
                                 </CardFooter>
                             </>
                         )}
