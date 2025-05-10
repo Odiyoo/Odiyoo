@@ -5,6 +5,7 @@ import Link from "next/link"
 import {
     Check,
     Home,
+    Loader,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -20,7 +21,7 @@ import StepTwo from "./StepTwo"
 import { calculateInsulationCost, calculateDakrenovatieQuoteForContractor, ContractorDakrenovatieQuote, ExtendedContractor, InsulationChoice, DakgotenChoice, DakraamChoice } from "@/domain/contractors"
 import { displayPrice, taxPercentage, taxPercentageDisplay } from "@/domain/finance"
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
-import { appointmentRequestSchema, AppointmentRequestSchema, QuoteDakReinigingAddSchema } from "@/domain/services/roofing"
+import { appointmentRequestSchema, AppointmentRequestSchema, convertToDakrenovatieQuoteSchema, QuoteDakReinigingAddSchema } from "@/domain/services/roofing"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
@@ -41,7 +42,6 @@ export type FormData = {
     insulation: InsulationChoice,
     dakgoten: DakgotenChoice,
     dakraam: DakraamChoice,
-    email: string,
 }
 
 export default function DakrenovatieForm() {
@@ -64,7 +64,6 @@ export default function DakrenovatieForm() {
         insulation: 'geen',
         dakgoten: 'niet vervangen',
         dakraam: 'geen',
-        email: "",
     })
     const [quoteGenerated, setQuoteGenerated] = useState(false)
     const [quoteData, setQuoteData] = useState<ContractorDakrenovatieQuote>({
@@ -88,6 +87,7 @@ export default function DakrenovatieForm() {
     const [lightboxOpen, setLightboxOpen] = useState(false)
     const [lightboxImages, setLightboxImages] = useState([])
     const [lightboxIndex, setLightboxIndex] = useState(0)
+    const [isSubmissionLoading, setIsSubmissionLoading] = useState(false)
 
     const form = useForm<AppointmentRequestSchema>({
         resolver: zodResolver(appointmentRequestSchema),
@@ -96,6 +96,7 @@ export default function DakrenovatieForm() {
             address: "",
             email: "",
             telephone: "",
+            status: "offerte_aangemaakt",
         },
     });
 
@@ -267,41 +268,43 @@ export default function DakrenovatieForm() {
       },
     ]*/
 
-      const onSubmit = async (data: AppointmentRequestSchema) => {
-
-        /*const quote_res = await fetch("/api/quote", {
+    const onSubmit = async (data: AppointmentRequestSchema) => {
+        setIsSubmissionLoading(true);
+        const quote_res = await fetch("/api/quote/dakrenovatie", {
             method: "POST",
-            body: JSON.stringify(quoteData),
+            body: JSON.stringify(convertToDakrenovatieQuoteSchema(formData, quoteData)),
             headers: {
                 "Content-Type": "application/json",
             },
         });
 
         const quote_result: any = await quote_res.json();
-        const quote_id: number = quote_result.data.id;
+        const quote_id: string = quote_result.data.id;
 
         if (!quote_res.ok) {
             form.setError("fullname", { message: "Er is iets fout gelopen." });
         }
-
-        const res = await fetch("/api/quote/ask-appointment", {
+        data.quote_id = quote_id
+        data.quote_type = 'dakrenovatie'
+        const appointment_res = await fetch("/api/quote/ask-appointment", {
             method: "POST",
-            body: JSON.stringify({...data, quote_id}),
+            body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json",
             },
         });
 
-        const result: {} = await res.json();
+        const result: { data: { appointment_id: string } } = await appointment_res.json();
 
-        if (!res.ok) {
+        if (!appointment_res.ok) {
             form.setError("fullname", { message: "Er is iets fout gelopen." });
         } else {
+            setIsSubmissionLoading(false)
             setInfoSubmitted(true)
         }
 
         await fetch(
-            '/api/mail/send-dakreiniging-quote',
+            '/api/mail/send-dakrenovatie-quote',
             {
                 method: "POST",
                 headers: {
@@ -310,24 +313,11 @@ export default function DakrenovatieForm() {
                 body: JSON.stringify({
                     formData,
                     quoteData,
-                })
-            }
-        ).then((response) => { console.log(response) })*/
-        setFormData((prev) => ({...prev, email: data.email}))
-        await fetch(
-            '/api/mail/send-quote',
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    formData,
-                    quoteData,
+                    customerData: data,
+                    appointment_id: result.data.appointment_id
                 })
             }
         ).then((response) => { console.log(response) })
-        setInfoSubmitted(true)
     };
 
     // Calculate quotes for all contractors when moving to step 2
@@ -356,34 +346,6 @@ export default function DakrenovatieForm() {
 
         setContractorQuotes(quotes);
         setContractorsLoading(false);
-    }
-
-    // Handle email submission
-    const handleEmailSubmit = async (e: { preventDefault: () => void }) => {
-        e.preventDefault()
-        if (formData.email) {
-            //setEmailSubmitted(true)
-            setShowConfetti(true)
-
-            await fetch(
-                '/api/mail/send-quote',
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        formData,
-                        quoteData,
-                    })
-                }
-            ).then((response) => { console.log(response) })
-
-            // Reset confetti after 5 seconds
-            setTimeout(() => {
-                setShowConfetti(false)
-            }, 5000)
-        }
     }
 
     // Open lightbox
@@ -522,7 +484,7 @@ export default function DakrenovatieForm() {
                                             <span className="font-medium">€{displayPrice(quoteData.materialCost).toLocaleString()}</span>
                                         </div>
                                         {formData.insulation !== 'geen' && <div className="flex justify-between">
-                                            <span>Isolatie {formData.insulation}:</span>
+                                            <span>Isolatie - {formData.insulation}:</span>
                                             <span>€{displayPrice(quoteData.insulationCost)}/m²</span>
                                         </div>}
                                         {formData.dakgoten !== 'niet vervangen' && <div className="flex justify-between">
@@ -615,12 +577,12 @@ export default function DakrenovatieForm() {
                                             <p className="text-center font-medium">Wat wil je nu doen?</p>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="border border-dashed border-primary/50 rounded-lg p-4 text-center cursor-pointer hover:bg-primary/5 transition-colors">
-                                                    <h4 className="font-medium mb-2">Hoe te besparen op je dakwerken</h4>
-                                                    <Link href="/faq" className="text-sm text-muted-foreground">
+                                                <Link href="/faq" className="text-sm text-muted-foreground">
+                                                    <div className="border border-dashed border-primary/50 rounded-lg p-4 text-center cursor-pointer hover:bg-primary/5 transition-colors">
+                                                        <h4 className="font-medium mb-2">Hoe te besparen op je dakwerken</h4>
                                                         Ontdek tips en trucs om kosten te besparen bij je dakproject
-                                                    </Link>
-                                                </div>
+                                                    </div>
+                                                </Link>
 
                                                 <Link href="/signup" className="block">
                                                     <div className="border border-dashed border-primary/50 rounded-lg p-4 text-center cursor-pointer hover:bg-primary/5 transition-colors">
@@ -688,7 +650,7 @@ export default function DakrenovatieForm() {
                                                             <>
                                                                 <FormLabel htmlFor="email">E-mailadres</FormLabel>
                                                                 <FormControl>
-                                                                    <Input id="email" type="email" placeholder="jouw@email.be" className="mt-2" {...field} required onChange={() => {setFormData((prev) => ({...prev, email: field.value}))}} />
+                                                                    <Input id="email" type="email" placeholder="jouw@email.be" className="mt-2" {...field} required />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                             </>
@@ -696,7 +658,7 @@ export default function DakrenovatieForm() {
                                                     />
                                                 </div>
                                                 <Button type="submit" className="w-full mt-12">
-                                                    Offerte ontvangen
+                                                    {isSubmissionLoading ? <Loader className="animate-spin" /> : "Offerte ontvangen"}
                                                 </Button>
                                             </form>
                                         </Form>
@@ -704,9 +666,11 @@ export default function DakrenovatieForm() {
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col space-y-4">
-                                <Button variant="link" onClick={() => setStep(1)}>
-                                    Opnieuw beginnen
-                                </Button>
+                                <Link href="/quote">
+                                    <Button variant="link">
+                                        Opnieuw beginnen
+                                    </Button>
+                                </Link>
                             </CardFooter>
                         </>
                     )}

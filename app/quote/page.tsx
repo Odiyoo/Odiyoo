@@ -6,7 +6,7 @@ import DakrenovatieForm from "./dakrenovatie/Form"
 import DakreinigingForm from "./dakreiniging/Form"
 import ChooseServiceForm from "./ChooseServiceForm"
 import { ExtendedContractor } from "@/domain/contractors"
-import Sidebar from "./Sidebar"
+import Sidebar from "@/components/sidebar"
 
 export type FormChoice = 'dakreiniging' | 'dakrenovatie';
 

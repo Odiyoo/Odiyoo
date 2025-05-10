@@ -30,7 +30,7 @@ export default function Navbar() {
     <header className="bg-white py-4 shadow-sm">
       <div className="container flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <FullLogo className="" />
+          <FullLogo />
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/quote" className="hidden md:block">

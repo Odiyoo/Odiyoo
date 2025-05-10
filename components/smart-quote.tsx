@@ -39,7 +39,7 @@ export default function SmartQuoteBar() {
             <div className={`flex rounded-full transition ease-in border border-gray-200 shadow-lg gap-1 my-2 bg-odiyoo border-odiyoo ${hoverStyle}`}>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <div className={`text-left p-4 px-6 rounded-full bg-white rounded-r-none transition-all ease-in cursor-pointer focus:border active:border border-odiyoo hover:bg-gray-200 w-1/3 ${service !== 'unselected' ? "bg-gray-300" : ''}`}>
+                        <div className={`text-left p-2 px-6 rounded-full bg-white rounded-r-none transition-all ease-in cursor-pointer focus:border active:border border-odiyoo hover:bg-gray-200 w-1/3 ${service !== 'unselected' ? "bg-gray-300" : ''}`}>
                             <h4 className="text-odiyoo">Wat heb je nodig?</h4>
                             <p className="text-muted-foreground">{service === 'unselected' ? "Kies hier..." : capitalize(service)}</p>
                         </div>
@@ -93,12 +93,12 @@ export default function SmartQuoteBar() {
                 </DropdownMenu>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <div className={`text-left p-4 px-6 rounded-full bg-white rounded-l-none transition-all ease-in cursor-pointer hover:bg-gray-200 w-full ${hasKnownMeasurements !== undefined ? "bg-gray-300" : ''}`}>
+                        <div className={`text-left p-2 px-6 rounded-full bg-white rounded-l-none transition-all ease-in cursor-pointer hover:bg-gray-200 w-full ${hasKnownMeasurements !== undefined ? "bg-gray-300" : ''}`}>
                             <h4 className="text-odiyoo">Ken je je dakoppervlakte?</h4>
                             <p className="text-muted-foreground">{hasKnownMeasurements === undefined ? "Kies hier..." : (hasKnownMeasurements ? "Ja" : "Nee")}</p>
                         </div>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 rounded-3xl p-4 shadow-2xl">
+                    <DropdownMenuContent className="w-80 rounded-3xl p-4 shadow-2xl">
                         <DropdownMenuLabel className="text-lg text-odiyoo">Ken je je dakoppervlakte?</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>

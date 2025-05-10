@@ -569,7 +569,7 @@ export default function LandingPage() {
 }
 
 
-function ActionChoice({...props}) {
+function ActionChoice({ ...props }) {
 
   type Realisatie = {
     before_img: string,
@@ -630,6 +630,15 @@ function ActionChoice({...props}) {
     }
   ]
 
+  function shuffleArray(array: Realisatie[]) {
+    let result = array
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return result
+  }
+
   const SliderCard = ({ before_img, after_img, city, rating, type, price }: Realisatie) => {
     return (
       <Card className="pt-6 rounded-2xl">
@@ -662,15 +671,15 @@ function ActionChoice({...props}) {
         </TabsList>
         <TabsContent value="dakreiniging">
           <div className="hidden md:grid grid-cols-3 gap-2">
-            {realisaties.map((realisatie, key: number) => (
+            {realisaties.map((realisatie, key) => (
               <SliderCard key={key} before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
             ))}
           </div>
         </TabsContent>
         <TabsContent value="dakrenovatie">
           <div className="hidden md:grid grid-cols-3 gap-2">
-            {realisaties.map((realisatie) => (
-              <SliderCard before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
+            {shuffleArray(realisaties).map((realisatie, key) => (
+              <SliderCard key={key} before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
             ))}
           </div>
         </TabsContent>
