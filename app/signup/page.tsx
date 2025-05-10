@@ -47,7 +47,7 @@ export default function SignupPage() {
       form.setError("email", { message: result.message || "Registreren mislukt" });
     } else {
       // TODO: store user role in session? or fetch
-      router.push('/dashboard');
+      router.push('/');
       //window.location.href = "/dashboard";
     }
   };

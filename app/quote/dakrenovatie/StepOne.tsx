@@ -5,10 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { calculateExtrasCost } from "@/domain/contractors";
-import { ArrowRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Check, CheckIcon, Loader, X } from "lucide-react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
-import { FormData } from "./page"
+import { DakgotenChoice, DakraamChoice, FormData, InsulationChoice } from "./Form"
+import Link from "next/link";
+import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/domain/auth";
+import { FreeRoofInspectionSchema, freeRoofInspectionSchema } from "@/domain/services/roofing";
+import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 type SidebarProps = {
     formData: FormData,
@@ -16,28 +23,18 @@ type SidebarProps = {
     handleStep1Complete: any,
 };
 
+
 export default function StepOne({ formData, setFormData, handleStep1Complete }: SidebarProps) {
 
-    const [showAddressSuggestions, setShowAddressSuggestions] = useState(false);
-    const [addressSuggestions, setAddressSuggestions] = useState([]);
     const addressInputRef = useRef(null)
     const addressRef = useRef<any>(null)
-
     const { isLoaded: hasGmapsLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: "AIzaSyARTWcUUS8RHo9FZOCA4bnF8VxXUU0wcRk", //process.env.NEXT_PUBLIC_GMAPS_API_KEY!,
         libraries: ['places']
     })
 
-    const handleAddressSelect = (suggestion) => {
-        setFormData((prev: FormData) => ({
-            ...prev,
-            address: suggestion.address,
-        }))
-        setShowAddressSuggestions(false)
-    }
-
-    const handleSelectChange = (name, value) => {
+    const handleSelectChange = (name: any, value: any) => {
         setFormData((prev: FormData) => ({ ...prev, [name]: value }))
     }
 
@@ -55,6 +52,18 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                 [name]: !prev.extras[name],
             },
         }))
+    }
+
+    const selectInsulation = (choice: InsulationChoice) => {
+        setFormData((prev: FormData) => ({ ...prev, insulation: choice }))
+    }
+
+    const selectDakgoten = (choice: DakgotenChoice) => {
+        setFormData((prev: FormData) => ({ ...prev, dakgoten: choice }))
+    }
+
+    const selectDakraam = (choice: DakraamChoice) => {
+        setFormData((prev: FormData) => ({ ...prev, dakraam: choice }))
     }
 
     // The extras images
@@ -83,42 +92,15 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
         },
     }
 
-    // Click outside to close address suggestions
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (addressInputRef.current && !addressInputRef.current.contains(event.target)) {
-                setShowAddressSuggestions(false)
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside)
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside)
-        }
-    }, [])
-
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
-
-        if (name === "address" && value.length > 3) {
-            // Simulate address autocomplete
-            const mockAddresses = [
-                { address: `${value} 1`, city: "Amsterdam", state: "NH", zip: "1011 AB" },
-                { address: `${value} 2`, city: "Rotterdam", state: "ZH", zip: "3011 CD" },
-                { address: `${value} 3`, city: "Utrecht", state: "UT", zip: "3511 EF" },
-                { address: `${value} 4`, city: "Den Haag", state: "ZH", zip: "2511 GH" },
-            ]
-            setAddressSuggestions(mockAddresses)
-            //setShowAddressSuggestions(true) replaced by Google places API
-        } else if (name === "address" && value.length <= 3) {
-            setShowAddressSuggestions(false)
-        }
+        setFormData((prev: any) => ({ ...prev, [name]: value }))
     }
 
     const handleOnPlacesChanged = () => {
         let address = addressRef.current.getPlaces();
     }
+
 
     return (
         <>
@@ -146,24 +128,6 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                             />
                         </StandaloneSearchBox>
                         }
-
-                        {/* Address Autocomplete */}
-                        {showAddressSuggestions && addressSuggestions.length > 0 && (
-                            <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
-                                {addressSuggestions.map((suggestion, index) => (
-                                    <div
-                                        key={index}
-                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                        onClick={() => handleAddressSelect(suggestion)}
-                                    >
-                                        <div className="font-medium">{suggestion.address}</div>
-                                        <div className="text-sm text-muted-foreground">
-                                            {suggestion.city}, {suggestion.zip}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </div>
 
                     <div className="space-y-2">
@@ -187,7 +151,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
 
                 {/* Roof Materials Section - Now outside of collapsible */}
                 <div className="space-y-4">
-                    <h4 className="font-medium">Dakbedekking</h4>
+                    <h4 className="font-medium text-odiyoo">Dakbedekking</h4>
                     <Tabs defaultValue="dakpannen" onValueChange={(value) => handleSelectChange("roofType", value)}>
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="dakpannen" className="hover:text-odiyoo focus:text-odiyoo">Dakpannen</TabsTrigger>
@@ -310,51 +274,163 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                     </Tabs>
                 </div>
 
+                {/* Keuze Isolatie */}
+                <div className="space-y-4">
+                    <h4 className="font-medium text-odiyoo">Isolatie</h4>
+                    <div className="grid grid-rows-1 md:grid-rows-4 gap-4">
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.insulation === 'geen' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectInsulation("geen")}
+                        >
+                            <div>
+                                <h3 className="font-medium">Geen</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Behoudt je huidige isolatie.
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.insulation === '10cm' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectInsulation("10cm")}
+                        >
+                            <div>
+                                <h3 className="font-medium">10 cm</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Minimaal.
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.insulation === '12cm' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectInsulation("12cm")}
+                        >
+                            <div>
+                                <h3 className="font-medium">12 cm</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Populair.
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.insulation === '14cm' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectInsulation("14cm")}
+                        >
+                            <div>
+                                <h3 className="font-medium">14 cm</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Aangeraden.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Keuze Dakgoten */}
+                <div className="space-y-4">
+                    <h4 className="font-medium text-odiyoo">Dakgoten</h4>
+                    <div className="grid grid-rows-1 md:grid-rows-4 gap-4">
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'niet vervangen' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectDakgoten("niet vervangen")}
+                        >
+                            <div>
+                                <h3 className="font-medium">Niet vervangen</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Behoudt je huidige situatie.
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'zinken goot' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectDakgoten("zinken goot")}
+                        >
+                            <div>
+                                <h3 className="font-medium">Zinken goot</h3>
+                                <p className="text-sm text-muted-foreground">
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'bekleden' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectDakgoten("bekleden")}
+                        >
+                            <div>
+                                <h3 className="font-medium">Bekleden (uittimmeren)</h3>
+                                <p className="text-sm text-muted-foreground">
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'hanggoot' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectDakgoten("hanggoot")}
+                        >
+                            <div>
+                                <h3 className="font-medium">Hanggoot</h3>
+                                <p className="text-sm text-muted-foreground">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Keuze Dakraam */}
+                <div className="space-y-4">
+                    <h4 className="font-medium text-odiyoo">Dakraam</h4>
+                    <div className="grid grid-rows-1 md:grid-rows-3 gap-4">
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakraam === 'geen' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectDakraam("geen")}
+                        >
+                            <div>
+                                <h3 className="font-medium">Geen</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Behoudt je huidige situatie.
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakraam === 'tuimelvenster' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectDakraam("tuimelvenster")}
+                        >
+                            <div className="flex gap-4">
+                                <img
+                                    src={"https://dakramen.veluxshop.nl/-/media/roofwindowshop/productimages/inside/windows/ggu.png"}
+                                    alt="Tuimelvenster"
+                                    className="w-24 h-24 object-cover rounded-md"
+                                />
+                                <div>
+                                    <h3 className="font-medium">Tuimelvenster</h3>
+                                    <p className="text-sm text-muted-foreground">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakraam === 'uitzettuimelvenster' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
+                            onClick={() => selectDakraam("uitzettuimelvenster")}
+                        >
+                            <div className="flex gap-4">
+                                <img
+                                    src={"https://dakramen.veluxshop.nl/-/media/roofwindowshop/productimages/inside/windows/gpl.png"}
+                                    alt="Uitzet tuimelvenster"
+                                    className="w-24 h-24 object-cover rounded-md"
+                                />
+                                <div>
+                                    <h3 className="font-medium">Uitzet tuimelvenster</h3>
+                                    <p className="text-sm text-muted-foreground">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <Separator />
 
                 {/* Extras Section - Now outside of collapsible */}
                 <div className="space-y-4">
                     <h4 className="font-medium text-odiyoo">Extra's</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.insulation ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
-                            onClick={() => toggleExtra("insulation")}
-                        >
-                            <div className="flex gap-4">
-                                <img
-                                    src={extrasImages.insulation || "/placeholder.svg"}
-                                    alt="Dakisolatie"
-                                    className="w-24 h-24 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h3 className="font-medium">Dakisolatie</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Verbeter de energie-efficiëntie van je huis met hoogwaardige dakisolatie.
-                                    </p>
-                                    <p className="text-sm font-medium mt-1">≈ €2.500</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.gutters ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
-                            onClick={() => toggleExtra("gutters")}
-                        >
-                            <div className="flex gap-4">
-                                <img
-                                    src={extrasImages.gutters || "/placeholder.svg"}
-                                    alt="Dakgoten"
-                                    className="w-24 h-24 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h3 className="font-medium">Nieuwe dakgoten</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Vervang of installeer nieuwe dakgoten om regenwater effectief af te voeren.
-                                    </p>
-                                    <p className="text-sm font-medium mt-1">≈ €1.200</p>
-                                </div>
-                            </div>
-                        </div>
 
                         <div
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.solarPanels ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
@@ -372,26 +448,6 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                                         Profiteer van duurzame energie door zonnepanelen te laten installeren.
                                     </p>
                                     <p className="text-sm font-medium mt-1">≈ €5.000</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.extras.skylights ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
-                            onClick={() => toggleExtra("skylights")}
-                        >
-                            <div className="flex gap-4">
-                                <img
-                                    src={extrasImages.skylights || "/placeholder.svg"}
-                                    alt="Dakramen"
-                                    className="w-24 h-24 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h3 className="font-medium">Dakramen</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Laat meer natuurlijk licht binnen met hoogwaardige dakramen.
-                                    </p>
-                                    <p className="text-sm font-medium mt-1">≈ €1.800</p>
                                 </div>
                             </div>
                         </div>

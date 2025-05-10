@@ -25,6 +25,15 @@ import Image from "next/image"
 import Footer from "@/components/footer"
 import { BeforeAfterSlider } from "@/components/before-after-slider"
 import FullLogoBlack from "@/components/full-logo-black"
+import SmartQuoteBar from "@/components/smart-quote"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+
 
 const floatingAnimation = `
   @keyframes float {
@@ -44,7 +53,7 @@ const floatingAnimation = `
 function VideoComponent({ url, isMuted, height, ...props }: { url: string, isMuted?: boolean, height?: number }) {
 
   return (
-    <video preload="none" aria-label="Video player" muted={isMuted} style={{ height: height}} {...props}>
+    <video preload="none" aria-label="Video player" muted={isMuted} style={{ height: height }} {...props}>
       <source src={url} type="video/mp4" />
       Your browser does not suppor the video tag.
     </video>
@@ -60,7 +69,7 @@ export default function LandingPage() {
       if (num === 1) {
         return 3
       } else {
-        return num-1
+        return num - 1
       }
     })
   }
@@ -69,7 +78,7 @@ export default function LandingPage() {
       if (num === 3) {
         return 1
       } else {
-        return num+1
+        return num + 1
       }
     })
   }
@@ -86,13 +95,16 @@ export default function LandingPage() {
         <div className="bg-odiyoo-secondary text-white py-3">
           <div className="container">
             <div className="flex items-center justify-center gap-2">
-              <div className="flex items-center transform animate-bounce">
-                <Shield className="h-5 w-5 mr-2" />
-                <span className="text-sm font-medium">Duurzame dakoplossingen | Gratis dakinspectie | Instant Offerte</span>
-              </div>
+              <Link href="/quote">
+                <div className="flex items-center transform animate-bounce">
+                  <Shield className="h-5 w-5 mr-2" />
+                  <span className="text-sm font-medium">Ontvang je offerte in 15 seconden</span>
+                </div>
+              </Link>
             </div>
           </div>
         </div>
+        <div></div>
         {/* Hero Section - Brand Trust */}
         <section className="bg-gradient-to-b from-white to-gray-50 py-20 pb-2">
           <div className="container">
@@ -123,6 +135,8 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
+            <SmartQuoteBar />
+            <ActionChoice className="mt-28" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-24 mb-8 pt-8 border-t border-gray-200">
               <div className="flex flex-col justify-center">
                 <p className="text-lg text-odiyoo uppercase">Leuven</p>
@@ -141,7 +155,7 @@ export default function LandingPage() {
                 </Link>
               </div>
               <div>
-                <BeforeAfterSlider image1="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/margriet_before_1500px.webp" image2="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/margriet_after_1500px.webp" />
+                <BeforeAfterSlider className="lg:py-24" image1="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/margriet_before_1500px.webp" image2="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/margriet_after_1500px.webp" />
               </div>
             </div>
           </div>
@@ -149,7 +163,7 @@ export default function LandingPage() {
         <section className="py-10 px-10 grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
           <div className="flex justify-center">
             <Suspense fallback={<p>Loading video...</p>}>
-              <VideoComponent url="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/Wiezijnwij.mp4" isMuted autoPlay loop/>
+              <VideoComponent url="https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/Wiezijnwij.mp4" isMuted autoPlay loop />
             </Suspense>
           </div>
           <div>
@@ -277,7 +291,7 @@ export default function LandingPage() {
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-bold sm:text-4xl">Wat <span className="text-odiyoo">Odiyoo</span> voor jou kan doen</h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                Wij maken het krijgen van een dakofferte eenvoudig, snel en nauwkeurig.
+                Slim. Snel. Zeker. Via Odiyoo.
               </p>
             </div>
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -344,32 +358,32 @@ export default function LandingPage() {
         {/* Actief in heel Belgie Section */}
         <section className="container bg-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-10">
-          <div>
-            <p className="text-lg text-black font-bold uppercase">Actief in heel België</p>
-            <p className="text-lg text-odiyoo font-bold">Van Antwerpen tot Luxemburg & West-Vlaanderen tot Limburg</p>
-            <Separator className="w-40 h-1 bg-odiyoo my-4" />
-            <p>
-              <span className="text-odiyoo font-bold">ODIYOO</span> is trots actief in heel België. Onze lokale kennis en <b>snelle responstijden</b> zorgen ervoor dat we de <span className="underline decoration-odiyoo decoration-2">unieke schoonmaakbehoeften</span> van elk gebied perfect begrijpen en aanpakken. Met een klantgerichte aanpak en professionele uitvoering garanderen wij een hoogwaardige service, waar u ook gevestigd bent.
-            </p>
-            <p className="mt-4">
-              Neem vandaag nog contact met ons op en ontdek hoe we uw pand kunnen transformeren met onze grondige reinigingsdiensten.
-            </p>
-            <p>{Array(5).map(() => <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />)}</p>
-            <Link href="/quote">
-              <Button size="lg" className="w-full sm:w-auto mt-6 border-odiyoo">
-                Offerte aanvragen
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-          <div className="flex justify-center md:block">
-            <Image
-              src="https://odiyoo.com/cdn/shop/files/Kopie_van_Logo_banner_mail_1200_x_628_px_1_f4af9cde-5f87-49af-a587-d3abdee31d10.png?v=1738311337&width=535"
-              width={500}
-              height={500}
-              alt="Afbeelding van België"
-            />
-          </div>
+            <div>
+              <p className="text-lg text-black font-bold uppercase">Actief in heel België</p>
+              <p className="text-lg text-odiyoo font-bold">Van Antwerpen tot Luxemburg & West-Vlaanderen tot Limburg</p>
+              <Separator className="w-40 h-1 bg-odiyoo my-4" />
+              <p>
+                <span className="text-odiyoo font-bold">ODIYOO</span> is trots actief in heel België. Onze lokale kennis en <b>snelle responstijden</b> zorgen ervoor dat we de <span className="underline decoration-odiyoo decoration-2">unieke schoonmaakbehoeften</span> van elk gebied perfect begrijpen en aanpakken. Met een klantgerichte aanpak en professionele uitvoering garanderen wij een hoogwaardige service, waar u ook gevestigd bent.
+              </p>
+              <p className="mt-4">
+                Neem vandaag nog contact met ons op en ontdek hoe we uw pand kunnen transformeren met onze grondige reinigingsdiensten.
+              </p>
+              <p>{Array(5).map(() => <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />)}</p>
+              <Link href="/quote">
+                <Button size="lg" className="w-full sm:w-auto mt-6 border-odiyoo">
+                  Offerte aanvragen
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="flex justify-center md:block">
+              <Image
+                src="https://odiyoo.com/cdn/shop/files/Kopie_van_Logo_banner_mail_1200_x_628_px_1_f4af9cde-5f87-49af-a587-d3abdee31d10.png?v=1738311337&width=535"
+                width={500}
+                height={500}
+                alt="Afbeelding van België"
+              />
+            </div>
           </div>
         </section>
 
@@ -405,7 +419,7 @@ export default function LandingPage() {
                         ))}
                       </div>
                       <p className="text-muted-foreground transition-transform duration-300 ease-in-out">
-                      “Ik schrijf om te laten weten dat we zeer tevreden zijn met het werk aan ons dak. Het team van Odiyoo heeft werk geleverd volgens de hoogste normen en geeft ons gemoedsrust nu ons huis volledig is gerestaureerd. En het ziet er ook geweldig uit. Dank je wel!”
+                        “Ik schrijf om te laten weten dat we zeer tevreden zijn met het werk aan ons dak. Het team van Odiyoo heeft werk geleverd volgens de hoogste normen en geeft ons gemoedsrust nu ons huis volledig is gerestaureerd. En het ziet er ook geweldig uit. Dank je wel!”
                       </p>
                     </div>
                   </div>
@@ -510,7 +524,7 @@ export default function LandingPage() {
       <div className="bg-gray-100 py-4">
         <div className="container text-center">
           <div className="flex items-center justify-center gap-2">
-            <FullLogoBlack/>
+            <FullLogoBlack />
           </div>
           <p className="text-sm text-muted-foreground mt-1">Dakoffertes eenvoudig, snel en nauwkeurig maken.</p>
         </div>
@@ -550,6 +564,120 @@ export default function LandingPage() {
         </div>
       </section>
       <Footer />
+    </div>
+  )
+}
+
+
+function ActionChoice({...props}) {
+
+  type Realisatie = {
+    before_img: string,
+    after_img: string,
+    city: string,
+    rating: number,
+    type: string,
+    price: string,
+  }
+  const realisaties: Realisatie[] = [
+    {
+      before_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/margriet_before_1500px.webp",
+      after_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/margriet_after_1500px.webp",
+      city: 'Leuven',
+      rating: 4.9,
+      type: 'Dakrenovatie - hellend dak',
+      price: '€3.750',
+    },
+    {
+      before_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/antwerpen_before.webp",
+      after_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/antwerpen_after.webp",
+      city: "Antwerpen",
+      price: "€4.250",
+      rating: 4.5,
+      type: "Dakreiniging - hellend dak"
+    },
+    {
+      before_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/gent_before.webp",
+      after_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/gent_after.webp",
+      city: 'Gent',
+      rating: 4.3,
+      price: '€3.750',
+      type: "Dakrenovatie - hellend dak"
+    },
+    {
+      before_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/brugge_before.webp",
+      after_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/brugge_after.webp",
+      city: 'Brugge',
+      rating: 5,
+      price: '€2.375',
+      type: "Dakreiniging - hellend dak"
+    },
+    {
+      before_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/mechelen_before.webp",
+      after_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/mechelen_after.webp",
+      city: 'Mechelen',
+      rating: 4.3,
+      price: '€3.075',
+      type: "Dakreiniging - hellend dak"
+    },
+    {
+      before_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/hasselt_before.webp",
+      after_img: "https://lvcvdxayxtcnfebvfeyc.supabase.co/storage/v1/object/public/assets/before-after-pictures/hasselt_after.webp",
+      city: 'Hasselt',
+      rating: 4.9,
+      price: '€4.750',
+      type: "Dakrenovatie - hellend dak"
+    }
+  ]
+
+  const SliderCard = ({ before_img, after_img, city, rating, type, price }: Realisatie) => {
+    return (
+      <Card className="pt-6 rounded-2xl">
+        <CardContent>
+          <BeforeAfterSlider
+            image1={before_img}
+            image2={after_img} />
+        </CardContent>
+        <CardFooter className="items-start flex-col">
+          <div className="flex justify-between w-full">
+            <p className="font-bold">Project in {city}</p>
+            <p><Star className="inline h-4 w-4 fill-yellow-500 text-yellow-500 align-middle" /> {rating}</p>
+          </div>
+          <p className="text-muted-foreground">{type}</p>
+          <div className="flex justify-between w-full">
+            <p className="text-muted-foreground">Uitvoeringsprijs</p>
+            <p><b>({price})</b></p>
+          </div>
+        </CardFooter>
+      </Card>
+    )
+  }
+
+  return (
+    <div className="" {...props}>
+      <Tabs defaultValue="dakreiniging">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="dakreiniging">🧽 Dak reinigen</TabsTrigger>
+          <TabsTrigger value="dakrenovatie">🏠 Dak renoveren</TabsTrigger>
+        </TabsList>
+        <TabsContent value="dakreiniging">
+          <div className="hidden md:grid grid-cols-3 gap-2">
+            {realisaties.map((realisatie, key: number) => (
+              <SliderCard key={key} before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="dakrenovatie">
+          <div className="hidden md:grid grid-cols-3 gap-2">
+            {realisaties.map((realisatie) => (
+              <SliderCard before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
+      <Link href="/quote">
+        <div className="flex justify-center mt-4 text-odiyoo hover:text-primary hover:underline"><p>Ik wil dit ook </p><ArrowRight className="place-self-center ml-2 h-4 w-4" /></div>
+      </Link>
     </div>
   )
 }
