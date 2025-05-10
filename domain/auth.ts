@@ -36,6 +36,7 @@ export async function signup(data: SignupSchema) {
     const supabase = await createClient();
     // autoconfirm on? execute above, autoconfirm off? show text about confirmation mail sent
     const { data: signup_data, error } = await supabase.auth.signUp({ email: data.email, password: data.password });
+    console.log(signup_data)
     if (!error) {
         await supabase.from('customers').insert({ id: signup_data.user!.id, firstname: data.firstname, lastname: data.lastname });
     }

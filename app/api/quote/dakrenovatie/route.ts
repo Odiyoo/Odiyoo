@@ -1,16 +1,17 @@
-import { appointmentRequestSchema, createAppointmentRequest, createQuote } from "@/domain/services/roofing";
+import { getContractors, createContractor, contractorAddSchema } from "@/domain/contractors";
+import { quoteDakrenovatieAddSchema, createDakrenovatieQuote, createQuote } from "@/domain/services/roofing";
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   if (req.method !== "POST") return new NextResponse(null, {status: 405});
 
   const body = await req.json();
-  const parsed = appointmentRequestSchema.safeParse(body);
+  const parsed = quoteDakrenovatieAddSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ message: "Ongeldige invoer" }, { status: 400 })
   }
 
-  const response = await createAppointmentRequest(parsed.data);
+  const response = await createDakrenovatieQuote(parsed.data);
 
   if (response.error) {
     console.log(response.error);

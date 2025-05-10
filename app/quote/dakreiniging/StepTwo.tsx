@@ -378,8 +378,8 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                     <div className="mt-4 pt-4 border-t">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
-                                                <h4 className="font-medium mb-2">Prijsberekening</h4>
-                                                <p className="text-muted-foreground">Indien je dakoppervlakte onder 220m² ligt, worden er geen extra kosten aangerekend.</p>
+                                                <h4 className="font-medium">Prijsberekening</h4>
+                                                <p className="text-sm text-muted-foreground mb-2">Indien je dakoppervlakte onder 220m² ligt, worden er geen extra kosten aangerekend.</p>
                                                 <div className="space-y-2 text-sm">
                                                     <div className="flex justify-between">
                                                         <span>Startprijs:</span>
@@ -404,25 +404,26 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                                 <h4 className="font-medium mb-2">Wat is er inbegrepen:</h4>
                                                 <div className="space-y-3">
                                                     <ul>
-                                                        <li className="mb-4"><span className="text-odiyoo">1. Voorbereiding & Veiligheid</span><br />
+                                                        <li className="mb-4 text-sm"><span className="text-odiyoo text-lg">1. Voorbereiding & Veiligheid</span><br />
                                                             Standaardladders (geen nokhaak/hoogwerker)<br />
                                                             Beperkte werfzone-afbakening<br />
                                                             Geen afdekken gevel/ramen inbegrepen<br />
                                                             Veiligheidsharnas met basissysteem</li>
-                                                        <li className="mb-4">
-                                                            <span className="text-odiyoo">2. Dakreiniging</span><br />
+                                                        <li className="mb-4 text-sm">
+                                                            <span className="text-odiyoo text-lg">2. Dakreiniging</span><br />
                                                             Standaardreiniging met roterende reiniger<br />
                                                             Geen stoomoptie<br />
                                                             1 reinigingsronde, geen nacontrole<br />
                                                             Geen goot- of schouwreiniging inbegrepen<br />
                                                         </li>
-                                                        <li className="mb-4">
-                                                            <span className="text-odiyoo">3. Nabehandeling</span><br />
+                                                        <li className="mb-4 text-sm">
+                                                            <span className="text-odiyoo text-lg">3. Nabehandeling</span><br />
                                                             Geen coating inbegrepen<br />
                                                             Opruimen werfzone met basisreiniging<br />
                                                         </li>
-                                                        <li className="mb-4">
-                                                            <span className="text-odiyoo">4. Eindschoonmaak niet inbegrepen</span>
+                                                        <li className="mb-4 text-sm">
+                                                            <span className="text-odiyoo text-lg">4. Eindschoonmaak</span><br />
+                                                            Niet inbegrepen
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -430,7 +431,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                         </div>
                                         <div className="mt-4">
                                             <h4 className="font-medium mb-2">Projectfoto's</h4>
-                                            <div className="grid grid-cols-3 gap-2">
+                                            {contractor.contractor_project_images && <div className="grid grid-cols-3 gap-2">
                                                 {contractor.contractor_project_images.map((img: string, index: number) => (
                                                     <img
                                                         key={index}
@@ -440,7 +441,10 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                                         onClick={() => openLightbox(contractor.contractor_project_images, index)}
                                                     />
                                                 ))}
-                                            </div>
+                                            </div>}
+                                            {contractor.contractor_project_images.length === 0 && (
+                                                <p className="text-muted-foreground">Geen project foto's beschikbaar</p>
+                                            )}
                                         </div>
                                     </div>
                                 )}

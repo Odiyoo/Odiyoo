@@ -32,7 +32,7 @@ export default function Footer() {
                                 </Link>
                             </li>
                         </ul>
-                        <h3 className="my-4 text-lg font-bold text-white">We komen graag met je in contact</h3>
+                        <h3 className="my-4 mt-12 text-lg font-bold text-white">We komen graag met je in contact</h3>
                         <ul className="space-y-2">
                             <li className="font-medium">{BUSINESS_NAME}</li>
                             <li className="flex flex-row gap-2"><BriefcaseBusiness /> {BTW}</li>
@@ -46,28 +46,30 @@ export default function Footer() {
                                 <span className="block">Zaterdag: 08.00 - 12.30</span>
                             </li>
                         </ul>
+                        <div className="flex flex-row gap-4 mt-8">
                         <Link href="https://instagram.com/odiyoo" target="_blank" className="hover:text-white">
                             <Instagram />
                         </Link>
                         <Link href="https://facebook.com/odiyoo" target="_blank" className="hover:text-white">
                             <Facebook />
                         </Link>
+                        </div>
                     </div>
                     <div>
                         <h3 className="mb-4 text-lg font-bold text-white">Voor klanten</h3>
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/" className="hover:text-white">
+                                <Link href="/#hoe-het-werkt" className="hover:text-white">
                                     Hoe werkt Odiyoo?
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/" className="hover:text-white">
+                                <Link href="/quote" className="hover:text-white">
                                     Offerte aanvragen
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/" className="hover:text-white">
+                                <Link href="/#getuigenissen" className="hover:text-white">
                                     Reviews & cases
                                 </Link>
                             </li>
@@ -82,17 +84,17 @@ export default function Footer() {
                         <h3 className="mb-4 text-lg font-bold text-white">Voor aannemers</h3>
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/over-ons" className="hover:text-white">
+                                <Link href="/" className="hover:text-white">
                                     Sluit je aan als aannemer
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/advies" className="hover:text-white">
+                                <Link href="/" className="hover:text-white">
                                     Wat verwachten wij?
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/terms" className="hover:text-white">
+                                <Link href="/" className="hover:text-white">
                                     Voordelen voor aannemers
                                 </Link>
                             </li>

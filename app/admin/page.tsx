@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useEffect, useState } from "react"
 import { displayPrice } from "@/domain/finance"
 import moment from "moment"
+import Navbar from "@/components/admin-navbar"
 
 export default function AdminDashboardPage() {
 
@@ -20,6 +21,8 @@ export default function AdminDashboardPage() {
   useEffect(() => {
 
     async function getStatistics() {
+      
+      setIsStatisticsLoading(true)
 
       const res = await fetch("/api/admin/stats", {
         method: "GET",
@@ -40,31 +43,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="bg-white py-4 shadow-sm">
-        <div className="container flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">Odiyoo</span>
-          </Link>
-          <nav className="hidden space-x-6 md:flex">
-            <Link href="/admin" className="text-sm font-medium text-foreground">
-              Dashboard
-            </Link>
-            <Link href="/admin/contractors" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Aannemers
-            </Link>
-            <Link href="/admin/quotes" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Offertes
-            </Link>
-            <Link href="/admin/settings" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Instellingen
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium">Admin paneel</span>
-          </div>
-        </div>
-      </header>
+      <Navbar activeLink="dashboard"/>
 
       <main className="container py-12">
         <div className="mb-8">

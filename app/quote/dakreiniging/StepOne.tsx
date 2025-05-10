@@ -222,8 +222,8 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                     </div>
 
                     <div className="bg-muted/50 p-4 rounded-lg mt-6">
-                        <h3 className="font-medium mb-2">Geselecteerde opties:</h3>
-                        <ul className="space-y-1">
+                        <h3 className="font-medium mb-2 text-lg">Geselecteerde opties:</h3>
+                        <ul className="space-y-1 text-sm">
                             {formData.options.dakbedekking && (
                                 <li className="flex justify-between">
                                     <span>Dakpannen of leien</span>
