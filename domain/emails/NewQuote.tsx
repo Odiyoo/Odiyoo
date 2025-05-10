@@ -5,13 +5,13 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { displayPrice, taxPercentage, taxPercentageDisplay } from "../finance"
 import { ChevronDown, ChevronUp, Clock, Mail, Phone } from "lucide-react"
 import { BUSINESS_NAME, CUSTOMER_SUPPORT_MAIL, CUSTOMER_SUPPORT_PHONE } from "../business"
-import { FormData } from "@/app/quote/page"
-import { calculateInsulationCost, ContractorQuote } from "../contractors"
+import { FormData } from "@/app/quote/dakrenovatie/Form"
+import { calculateInsulationCost, ContractorDakrenovatieQuote } from "../contractors"
 import { Tailwind, Section, Text, Heading, Button, Html, Body, Head } from "@react-email/components";
 
 export type NewQuoteMailProps = {
     formData: FormData,
-    quoteData: ContractorQuote,
+    quoteData: ContractorDakrenovatieQuote,
     afspraakToken: string,
 }
 import '@/app/globals.css'
@@ -46,39 +46,39 @@ export const NewQuoteMail: React.FC<Readonly<NewQuoteMailProps>> = async ({ form
 
                         <div className="rounded-lg border border-gray-200 bg-gray-100 p-6">
                             <div className="mb-6 text-center">
-                                <Heading className="text-2xl font-bold">€{displayPrice(quoteData.totalPrice).toLocaleString()}</Heading>
+                                <Heading className="text-2xl font-bold">€{displayPrice(quoteData.totalPrice)}</Heading>
                                 <Text className="text-muted-foreground">Geschatte totale kosten</Text>
                             </div>
 
                             <div className="space-y-4">
                                 <div className="flex justify-between">
                                     <Text>Afbraakwerken:</Text>
-                                    <Text className="font-medium">€{displayPrice(quoteData.afbraakCost).toLocaleString()}</Text>
+                                    <Text className="font-medium">€{displayPrice(quoteData.afbraakCost)}</Text>
                                 </div>
                                 <div className="flex justify-between">
                                     <Text>Timmerwerken:</Text>
-                                    <Text className="font-medium">€{displayPrice(quoteData.timmerCost).toLocaleString()}</Text>
+                                    <Text className="font-medium">€{displayPrice(quoteData.timmerCost)}</Text>
                                 </div>
                                 <div className="flex justify-between">
                                     <Text>Dakbedekking:</Text>
-                                    <Text className="font-medium">€{displayPrice(quoteData.materialCost).toLocaleString()}</Text>
+                                    <Text className="font-medium">€{displayPrice(quoteData.materialCost)}</Text>
                                 </div>
                                 {formData.extras.insulation && <div className="flex justify-between">
                                     <Text>Isolatie:</Text>
-                                    <Text className="font-medium">€{displayPrice(calculateInsulationCost(formData.roofSize, formData.selectedContractor!)).toLocaleString()}</Text>
+                                    <Text className="font-medium">€{displayPrice(calculateInsulationCost(formData.roofSize, formData.selectedContractor!))}</Text>
                                 </div>}
                                 <hr />
                                 <div className="flex justify-between">
                                     <Text>Subtotaal:</Text>
-                                    <Text className="font-medium">€{displayPrice(quoteData.totalPrice).toLocaleString()}</Text>
+                                    <Text className="font-medium">€{displayPrice(quoteData.totalPrice)}</Text>
                                 </div>
                                 <div className="flex justify-between">
                                     <Text>BTW ({taxPercentageDisplay}):</Text>
-                                    <Text className="font-medium">€{displayPrice(quoteData.totalPrice * taxPercentage).toLocaleString()}</Text>
+                                    <Text className="font-medium">€{displayPrice(quoteData.totalPrice * taxPercentage)}</Text>
                                 </div>
                                 <div className="flex justify-between font-bold">
                                     <Text>Totaal (incl. BTW):</Text>
-                                    <Text>€{displayPrice(quoteData.totalPrice * (1 + taxPercentage)).toLocaleString()}</Text>
+                                    <Text>€{displayPrice(quoteData.totalPrice * (1 + taxPercentage))}</Text>
                                 </div>
                             </div>
                             <div className="mt-6 rounded-lg bg-white p-4">
@@ -134,7 +134,7 @@ export const NewQuoteMail: React.FC<Readonly<NewQuoteMailProps>> = async ({ form
                                     </Text>
                                     <Button
                                         className="bg-odiyoo box-border w-full rounded-[8px] px-[12px] py-[12px] text-center font-semibold text-white"
-                                        href={`https://odiyoo.be/afspraak?token=${afspraakToken}`}
+                                        href={`https://odiyoo.com/afspraak?token=${afspraakToken}`}
                                     >
                                         Afspraak inplannen
                                     </Button>

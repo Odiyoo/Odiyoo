@@ -1,9 +1,8 @@
 
-import { FormData } from '@/app/quote/page'
+import { FormData } from '@/app/quote/dakrenovatie/Form'
 import { Resend } from 'resend'
-import { ContractorQuote } from './contractors'
+import { ContractorDakrenovatieQuote } from './contractors'
 import { NewQuoteMail } from './emails/NewQuote'
-import { ReactNode } from 'react'
 
 const resend = new Resend('re_J2gkf18n_ECx7BQwobmH2qWg72gZ2Li8Z')
 const FROM_MAIL = "info@omegauna.be"
@@ -29,7 +28,7 @@ export const sendMail = async ({ from, to, subject, html, react }: SendMailProps
     console.log(`Sent mail to ${to}`);
 }
 
-export const sendQuoteToCustomer = async (formData: FormData, quoteData: ContractorQuote) => {
+export const sendQuoteToCustomer = async (formData: FormData, quoteData: ContractorDakrenovatieQuote) => {
     await sendMail({
         to: [formData.email],
         subject: 'Je dakofferte is klaar!',

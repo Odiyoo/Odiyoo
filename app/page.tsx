@@ -27,6 +27,13 @@ import { BeforeAfterSlider } from "@/components/before-after-slider"
 import FullLogoBlack from "@/components/full-logo-black"
 import SmartQuoteBar from "@/components/smart-quote"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+
 
 const floatingAnimation = `
   @keyframes float {
@@ -129,7 +136,7 @@ export default function LandingPage() {
               </div>
             </div>
             <SmartQuoteBar />
-            <ActionChoice />
+            <ActionChoice className="mt-28" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-24 mb-8 pt-8 border-t border-gray-200">
               <div className="flex flex-col justify-center">
                 <p className="text-lg text-odiyoo uppercase">Leuven</p>
@@ -562,7 +569,7 @@ export default function LandingPage() {
 }
 
 
-function ActionChoice() {
+function ActionChoice({...props}) {
 
   type Realisatie = {
     before_img: string,
@@ -647,19 +654,29 @@ function ActionChoice() {
   }
 
   return (
-    <div className="">
-      <div className="flex flex-row justify-center gap-2 my-4 text-lg">
-        <h1 className="cursor-pointer transiition-all ease-in hover:text-odiyoo hover:underline">🧽 Dak reinigen</h1>
-        <p className="text-muted-foreground">|</p>
-        <h1 className="cursor-pointer transition-all ease-in hover:text-odiyoo hover:underline">🏠 Dak renoveren</h1>
-      </div>
-      <div className="hidden md:grid grid-cols-3 gap-2">
-        {realisaties.map((realisatie) => (
-          <SliderCard before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
-        ))}
-      </div>
+    <div className="" {...props}>
+      <Tabs defaultValue="dakreiniging">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="dakreiniging">🧽 Dak reinigen</TabsTrigger>
+          <TabsTrigger value="dakrenovatie">🏠 Dak renoveren</TabsTrigger>
+        </TabsList>
+        <TabsContent value="dakreiniging">
+          <div className="hidden md:grid grid-cols-3 gap-2">
+            {realisaties.map((realisatie, key: number) => (
+              <SliderCard key={key} before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="dakrenovatie">
+          <div className="hidden md:grid grid-cols-3 gap-2">
+            {realisaties.map((realisatie) => (
+              <SliderCard before_img={realisatie.before_img} after_img={realisatie.after_img} city={realisatie.city} rating={realisatie.rating} type={realisatie.type} price={realisatie.price} />
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
       <Link href="/quote">
-        <div className="flex justify-center mt-4 text-odiyoo hover:text-primary hover:underline"><p>Ik wil dit ook </p><ArrowRight className="place-self-center ml-2 h-4 w-4"/></div>
+        <div className="flex justify-center mt-4 text-odiyoo hover:text-primary hover:underline"><p>Ik wil dit ook </p><ArrowRight className="place-self-center ml-2 h-4 w-4" /></div>
       </Link>
     </div>
   )

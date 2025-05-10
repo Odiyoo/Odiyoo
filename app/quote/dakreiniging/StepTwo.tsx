@@ -1,181 +1,184 @@
 "use client"
 
 import {
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  ChevronDown,
-  ChevronUp,
-  Shield,
-  Star,
-  Store,
-  SortAsc,
-  Award,
-  Clock,
-  Loader2,
+    ArrowLeft,
+    ArrowRight,
+    Calendar,
+    ChevronDown,
+    ChevronUp,
+    Shield,
+    Star,
+    Store,
+    SortAsc,
+    Award,
+    Clock,
+    Loader2,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { useEffect, useState } from "react"
-import { ExtendedContractor } from "@/domain/contractors"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { ContractorDakreinigingQuote, DAKREINIGINGS_START_METERS, ExtendedContractor } from "@/domain/contractors"
+import { displayPrice } from "@/domain/finance"
+import { FormData } from "./Form"
 
-type StepTwoProps = { 
+type StepTwoProps = {
     handleStep2Complete: () => void,
-    contractors: ExtendedContractor[], 
-    step: any, 
-    formData: any, 
-    prevStep: any, 
-    nextStep: any, 
-    setFormData: any, 
-    quoteData: any,
-    contractorQuotes: any,
+    contractors: ExtendedContractor[],
+    step: number,
+    formData: FormData,
+    prevStep: any,
+    nextStep: any,
+    setFormData: Dispatch<SetStateAction<FormData>>,
+    quoteData: ContractorDakreinigingQuote,
+    contractorQuotes: Record<string, ContractorDakreinigingQuote>,
     isContractorsLoading: boolean,
-    openLightbox: any }
+    openLightbox: any
+}
 
 export default function StepTwo({ handleStep2Complete, contractors, step, formData, prevStep, nextStep, setFormData, quoteData, contractorQuotes, isContractorsLoading, openLightbox }: StepTwoProps) {
 
     const [expandedContractor, setExpandedContractor] = useState<string | null>(null)
     const [sortOption, setSortOption] = useState("price-low")
-    
-      // Add contractors data with additional fields
-      /*const contractors = [
-        {
-          id: 1,
-          name: "Premium Dakwerken",
-          city: "Amsterdam",
-          isProtectedAgainstBankruptcy: true,
-          hasShowroom: true,
-          showroomAddress: "Industrieweg 45, Amsterdam",
-          warranty: "20 jaar op materiaal, 10 jaar op arbeid",
-          availability: "Binnen 3 weken",
-          rating: 4.8,
-          experience: "15+ jaar",
-          description: "Gespecialiseerd in hoogwaardige installaties met premium materialen.",
-          image:
-            "https://img.freepik.com/premium-vector/buildstrong-logo-design-met-een-hamer-en-een-dak-voor-bouw-en-huisreparatie_579306-40844.jpg",
-          priceModifiers: {
-            dakpannen: 1.1,
-            leien: 1.15,
-          },
-          laborRate: 1.2, // 20% higher labor rate
-          reviews: [
-            { author: "Jan de Vries", rating: 5, text: "Uitstekend werk geleverd, zeer professioneel team." },
-            { author: "Marieke Jansen", rating: 5, text: "Perfecte afwerking en binnen de afgesproken tijd." },
-            { author: "Peter Bakker", rating: 4, text: "Goede kwaliteit, iets duurder maar het waard." },
-          ],
-          projectImages: [
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
-          ],
-          label: "Most experience",
+
+    // Add contractors data with additional fields
+    /*const contractors = [
+      {
+        id: 1,
+        name: "Premium Dakwerken",
+        city: "Amsterdam",
+        isProtectedAgainstBankruptcy: true,
+        hasShowroom: true,
+        showroomAddress: "Industrieweg 45, Amsterdam",
+        warranty: "20 jaar op materiaal, 10 jaar op arbeid",
+        availability: "Binnen 3 weken",
+        rating: 4.8,
+        experience: "15+ jaar",
+        description: "Gespecialiseerd in hoogwaardige installaties met premium materialen.",
+        image:
+          "https://img.freepik.com/premium-vector/buildstrong-logo-design-met-een-hamer-en-een-dak-voor-bouw-en-huisreparatie_579306-40844.jpg",
+        priceModifiers: {
+          dakpannen: 1.1,
+          leien: 1.15,
         },
-        {
-          id: 2,
-          name: "Budget Dakoplossingen",
-          city: "Rotterdam",
-          isProtectedAgainstBankruptcy: false,
-          hasShowroom: false,
-          showroomAddress: "",
-          warranty: "10 jaar op materiaal, 5 jaar op arbeid",
-          availability: "Binnen 2 weken",
-          rating: 4.2,
-          experience: "8+ jaar",
-          description: "Betaalbare dakoplossingen zonder in te leveren op kwaliteit.",
-          image: "https://adkbouw.be/wp-content/uploads/2023/11/ADK-BOUW-LOGO-REVERSE.png",
-          priceModifiers: {
-            dakpannen: 0.9,
-            leien: 0.95,
-          },
-          laborRate: 0.9, // 10% lower labor rate
-          reviews: [
-            { author: "Sandra Visser", rating: 4, text: "Goede prijs-kwaliteitverhouding, aanrader." },
-            { author: "Thomas Smit", rating: 5, text: "Snelle service en netjes opgeruimd na afloop." },
-            { author: "Linda Meijer", rating: 3, text: "Werk is goed, communicatie kon beter." },
-          ],
-          projectImages: [
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
-          ],
-          label: "Cheapest",
+        laborRate: 1.2, // 20% higher labor rate
+        reviews: [
+          { author: "Jan de Vries", rating: 5, text: "Uitstekend werk geleverd, zeer professioneel team." },
+          { author: "Marieke Jansen", rating: 5, text: "Perfecte afwerking en binnen de afgesproken tijd." },
+          { author: "Peter Bakker", rating: 4, text: "Goede kwaliteit, iets duurder maar het waard." },
+        ],
+        projectImages: [
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
+        ],
+        label: "Most experience",
+      },
+      {
+        id: 2,
+        name: "Budget Dakoplossingen",
+        city: "Rotterdam",
+        isProtectedAgainstBankruptcy: false,
+        hasShowroom: false,
+        showroomAddress: "",
+        warranty: "10 jaar op materiaal, 5 jaar op arbeid",
+        availability: "Binnen 2 weken",
+        rating: 4.2,
+        experience: "8+ jaar",
+        description: "Betaalbare dakoplossingen zonder in te leveren op kwaliteit.",
+        image: "https://adkbouw.be/wp-content/uploads/2023/11/ADK-BOUW-LOGO-REVERSE.png",
+        priceModifiers: {
+          dakpannen: 0.9,
+          leien: 0.95,
         },
-        {
-          id: 3,
-          name: "Elite Dakexperts",
-          city: "Utrecht",
-          isProtectedAgainstBankruptcy: true,
-          hasShowroom: true,
-          showroomAddress: "Dakstraat 12, Utrecht",
-          warranty: "25 jaar op materiaal, 15 jaar op arbeid",
-          availability: "Binnen 4-5 weken",
-          rating: 4.9,
-          experience: "20+ jaar",
-          description: "Premium service met toonaangevende garantie en vakmanschap.",
-          image: "https://i0.wp.com/dakwerkenmarienjoris.be/wp-content/uploads/2021/07/roof-1.png?w=840&ssl=1",
-          priceModifiers: {
-            dakpannen: 1.2,
-            leien: 1.25,
-          },
-          laborRate: 1.3, // 30% higher labor rate
-          reviews: [
-            { author: "Willem Janssen", rating: 5, text: "Absolute topkwaliteit, elk detail perfect afgewerkt." },
-            { author: "Emma de Boer", rating: 5, text: "Zeer professioneel en betrouwbaar, uitstekende garantie." },
-            { author: "Joost van Dijk", rating: 5, text: "Duurder, maar de kwaliteit en service zijn ongeëvenaard." },
-          ],
-          projectImages: [
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
-          ],
+        laborRate: 0.9, // 10% lower labor rate
+        reviews: [
+          { author: "Sandra Visser", rating: 4, text: "Goede prijs-kwaliteitverhouding, aanrader." },
+          { author: "Thomas Smit", rating: 5, text: "Snelle service en netjes opgeruimd na afloop." },
+          { author: "Linda Meijer", rating: 3, text: "Werk is goed, communicatie kon beter." },
+        ],
+        projectImages: [
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
+        ],
+        label: "Cheapest",
+      },
+      {
+        id: 3,
+        name: "Elite Dakexperts",
+        city: "Utrecht",
+        isProtectedAgainstBankruptcy: true,
+        hasShowroom: true,
+        showroomAddress: "Dakstraat 12, Utrecht",
+        warranty: "25 jaar op materiaal, 15 jaar op arbeid",
+        availability: "Binnen 4-5 weken",
+        rating: 4.9,
+        experience: "20+ jaar",
+        description: "Premium service met toonaangevende garantie en vakmanschap.",
+        image: "https://i0.wp.com/dakwerkenmarienjoris.be/wp-content/uploads/2021/07/roof-1.png?w=840&ssl=1",
+        priceModifiers: {
+          dakpannen: 1.2,
+          leien: 1.25,
         },
-        {
-          id: 4,
-          name: "Standaard Dakdiensten",
-          city: "Den Haag",
-          isProtectedAgainstBankruptcy: true,
-          hasShowroom: false,
-          showroomAddress: "",
-          warranty: "15 jaar op materiaal, 7 jaar op arbeid",
-          availability: "Binnen 1 week",
-          rating: 4.5,
-          experience: "12+ jaar",
-          description: "Betrouwbare, gemiddelde prijzen met consistente kwaliteit en service.",
-          image: "https://i0.wp.com/dakwerkenmarienjoris.be/wp-content/uploads/2021/07/roof-1.png?w=840&ssl=1",
-          priceModifiers: {
-            dakpannen: 1.0,
-            leien: 1.0,
-          },
-          laborRate: 1.0, // standard labor rate
-          reviews: [
-            { author: "Karin Vermeulen", rating: 4, text: "Goede service, alles volgens afspraak verlopen." },
-            { author: "Bas Hendriks", rating: 5, text: "Prettige samenwerking en goed resultaat." },
-            { author: "Annemieke Groot", rating: 4, text: "Betrouwbaar bedrijf, geen verrassingen." },
-          ],
-          projectImages: [
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
-            "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
-          ],
-          label: "Snelst beschikbaar",
+        laborRate: 1.3, // 30% higher labor rate
+        reviews: [
+          { author: "Willem Janssen", rating: 5, text: "Absolute topkwaliteit, elk detail perfect afgewerkt." },
+          { author: "Emma de Boer", rating: 5, text: "Zeer professioneel en betrouwbaar, uitstekende garantie." },
+          { author: "Joost van Dijk", rating: 5, text: "Duurder, maar de kwaliteit en service zijn ongeëvenaard." },
+        ],
+        projectImages: [
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
+        ],
+      },
+      {
+        id: 4,
+        name: "Standaard Dakdiensten",
+        city: "Den Haag",
+        isProtectedAgainstBankruptcy: true,
+        hasShowroom: false,
+        showroomAddress: "",
+        warranty: "15 jaar op materiaal, 7 jaar op arbeid",
+        availability: "Binnen 1 week",
+        rating: 4.5,
+        experience: "12+ jaar",
+        description: "Betrouwbare, gemiddelde prijzen met consistente kwaliteit en service.",
+        image: "https://i0.wp.com/dakwerkenmarienjoris.be/wp-content/uploads/2021/07/roof-1.png?w=840&ssl=1",
+        priceModifiers: {
+          dakpannen: 1.0,
+          leien: 1.0,
         },
-      ]*/
+        laborRate: 1.0, // standard labor rate
+        reviews: [
+          { author: "Karin Vermeulen", rating: 4, text: "Goede service, alles volgens afspraak verlopen." },
+          { author: "Bas Hendriks", rating: 5, text: "Prettige samenwerking en goed resultaat." },
+          { author: "Annemieke Groot", rating: 4, text: "Betrouwbaar bedrijf, geen verrassingen." },
+        ],
+        projectImages: [
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Header-Website1X-copy-2048x972.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/10/Wouwersdreef-51-57-1855x1233.jpg",
+          "https://dakwerkenjanssens.be/wp-content/uploads/2024/02/Kolvenierstraat-Zink-Staande-Naad1-1536x1024.jpg",
+        ],
+        label: "Snelst beschikbaar",
+      },
+    ]*/
 
     // Update the selectContractor function
-    const selectContractor = (contractorId: string) => {
-    setFormData((prev) => ({ ...prev, selectedContractor: contractorId }))
+    const selectContractor = (contractor: ExtendedContractor) => {
+        setFormData((prev) => ({ ...prev, selectedContractor: contractor }))
     }
 
     // Toggle expanded contractor
     const toggleContractorExpand = (contractorId: string) => {
-    if (expandedContractor === contractorId) {
-        setExpandedContractor(null)
-    } else {
-        setExpandedContractor(contractorId)
-    }
+        if (expandedContractor === contractorId) {
+            setExpandedContractor(null)
+        } else {
+            setExpandedContractor(contractorId)
+        }
     }
 
     // Add a function to sort contractors
@@ -184,17 +187,17 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
 
         switch (sortOption) {
             case "price-low":
-            return sortedContractors.sort((a, b) => {
-                const aQuote = contractorQuotes[a.id] || { totalPrice: 0 }
-                const bQuote = contractorQuotes[b.id] || { totalPrice: 0 }
-                return aQuote.totalPrice - bQuote.totalPrice
-            })
+                return sortedContractors.sort((a, b) => {
+                    const aQuote = contractorQuotes[a.id] || { totalPrice: 0 }
+                    const bQuote = contractorQuotes[b.id] || { totalPrice: 0 }
+                    return aQuote.totalPrice - bQuote.totalPrice
+                })
             case "price-high":
-            return sortedContractors.sort((a, b) => {
-                const aQuote = contractorQuotes[a.id] || { totalPrice: 0 }
-                const bQuote = contractorQuotes[b.id] || { totalPrice: 0 }
-                return bQuote.totalPrice - aQuote.totalPrice
-            })
+                return sortedContractors.sort((a, b) => {
+                    const aQuote = contractorQuotes[a.id] || { totalPrice: 0 }
+                    const bQuote = contractorQuotes[b.id] || { totalPrice: 0 }
+                    return bQuote.totalPrice - aQuote.totalPrice
+                })
             case "experience":
                 return sortedContractors.sort((a, b) => {
                     const aExp = a.company_start_year === null ? 0 : (new Date().getFullYear() - a.company_start_year)
@@ -211,7 +214,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                 })*/
                 return sortedContractors
             default:
-            return sortedContractors
+                return sortedContractors
         }
     }
 
@@ -251,7 +254,7 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
             <CardContent>
                 <div className="space-y-4">
                     {isContractorsLoading && (
-                        <div className="flex justify-center"><Loader2 className="animate-spin"/></div>
+                        <div className="flex justify-center"><Loader2 className="animate-spin" /></div>
                     )}
                     {!isContractorsLoading && getSortedContractors().map((contractor) => {
                         const quote = contractorQuotes[contractor.id] || { totalPrice: 0 }
@@ -260,9 +263,9 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                         return (
                             <div
                                 key={contractor.id}
-                                className={`rounded-lg border p-4 transition-colors ${formData.selectedContractor === contractor.id
-                                        ? "border-odiyoo bg-primary/5"
-                                        : "hover:border-primary/50"
+                                className={`rounded-lg border p-4 transition-colors ${formData.selectedContractor === contractor
+                                    ? "border-odiyoo bg-primary/5"
+                                    : "hover:border-primary/50"
                                     }`}
                             >
                                 <div
@@ -273,18 +276,14 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                     }}
                                 >
                                     <div className="flex items-start gap-4">
-                                        <div className="h-20 w-20 overflow-hidden rounded-full bg-gray-100">
-                                            <img
-                                                src={contractor.profile_image || "/placeholder.svg"}
-                                                alt="Aannemer"
-                                                className="h-full w-full object-cover"
-                                            />
+                                        <div className="h-20 w-20 overflow-hidden rounded-full bg-odiyoo">
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center">
                                                     <span className="mr-1 text-sm font-medium">{contractor.rating}</span>
                                                     <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+                                                    <span className="mr-1 text-sm font-medium">({contractor.review_count})</span>
                                                 </div>
                                                 {contractor.label && (
                                                     <div className="flex items-center">
@@ -342,26 +341,34 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                                         €{Math.round(quote.totalPrice).toLocaleString()}
                                                     </span>
                                                 </div>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
+                                                <div>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            toggleContractorExpand(contractor.id)
+                                                        }}
+                                                    >
+                                                        {isExpanded ? (
+                                                            <>
+                                                                <span className="mr-1 text-xs">Minder info</span>
+                                                                <ChevronUp className="h-4 w-4" />
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <span className="mr-1 text-xs">Meer info</span>
+                                                                <ChevronDown className="h-4 w-4" />
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                    <Button size="sm" onClick={() => {
+                                                        selectContractor(contractors.find((contr) => contr.id === contractor.id))
                                                         toggleContractorExpand(contractor.id)
-                                                    }}
-                                                >
-                                                    {isExpanded ? (
-                                                        <>
-                                                            <span className="mr-1 text-xs">Minder info</span>
-                                                            <ChevronUp className="h-4 w-4" />
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <span className="mr-1 text-xs">Meer info</span>
-                                                            <ChevronDown className="h-4 w-4" />
-                                                        </>
-                                                    )}
-                                                </Button>
+                                                    }}>
+                                                        Kies
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -372,25 +379,20 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
                                                 <h4 className="font-medium mb-2">Prijsberekening</h4>
+                                                <p className="text-muted-foreground">Indien je dakoppervlakte onder 220m² ligt, worden er geen extra kosten aangerekend.</p>
                                                 <div className="space-y-2 text-sm">
                                                     <div className="flex justify-between">
-                                                        <span>Materiaalkosten:</span>
-                                                        <span>€{Math.round(quote.materialCost).toLocaleString()}</span>
+                                                        <span>Startprijs:</span>
+                                                        <span>€{displayPrice(quote.startPrice)}</span>
                                                     </div>
-                                                    <div className="flex justify-between">
-                                                        <span>Arbeidskosten:</span>
-                                                        <span>€{Math.round(quote.laborCost).toLocaleString()}</span>
+                                                    <div className={`flex justify-between ${formData.roofSize > DAKREINIGINGS_START_METERS ? '' : 'line-through'}`}>
+                                                        <span>Prijs per m²: €{contractor.dakreiniging_prijs_per_sq_meter}</span>
+                                                        <span>€{displayPrice(quote.costBasedOnSurface)}</span>
                                                     </div>
-                                                    {quote.extrasCost > 0 && (
-                                                        <div className="flex justify-between">
-                                                            <span>Extra's:</span>
-                                                            <span>€{Math.round(quote.extrasCost).toLocaleString()}</span>
-                                                        </div>
-                                                    )}
                                                     <Separator />
                                                     <div className="flex justify-between font-bold">
                                                         <span>Totaal:</span>
-                                                        <span>€{Math.round(quote.totalPrice).toLocaleString()}</span>
+                                                        <span>€{displayPrice(quote.totalPrice)}</span>
                                                     </div>
                                                     <div className="flex justify-between text-xs text-muted-foreground">
                                                         <span>Geschatte duur:</span>
@@ -399,34 +401,37 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                                 </div>
                                             </div>
                                             <div>
-                                                <h4 className="font-medium mb-2">Beoordelingen</h4>
+                                                <h4 className="font-medium mb-2">Wat is er inbegrepen:</h4>
                                                 <div className="space-y-3">
-                                                    {contractor.reviews.length === 0 && (
-                                                        <p className="text-muted-foreground text-sm">Geen beoordelingen</p>
-                                                    )}
-                                                    {contractor.reviews.map((review, index) => (
-                                                        <div key={index} className="text-sm">
-                                                            <div className="flex items-center">
-                                                                <span className="font-medium">{review.author}</span>
-                                                                <div className="ml-2 flex">
-                                                                    {[...Array(5)].map((_, i) => (
-                                                                        <Star
-                                                                            key={i}
-                                                                            className={`h-3 w-3 ${i < review.rating ? "fill-yellow-500 text-yellow-500" : "text-gray-300"}`}
-                                                                        />
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                            <p className="text-muted-foreground">{review.text}</p>
-                                                        </div>
-                                                    ))}
+                                                    <ul>
+                                                        <li className="mb-4"><span className="text-odiyoo">1. Voorbereiding & Veiligheid</span><br />
+                                                            Standaardladders (geen nokhaak/hoogwerker)<br />
+                                                            Beperkte werfzone-afbakening<br />
+                                                            Geen afdekken gevel/ramen inbegrepen<br />
+                                                            Veiligheidsharnas met basissysteem</li>
+                                                        <li className="mb-4">
+                                                            <span className="text-odiyoo">2. Dakreiniging</span><br />
+                                                            Standaardreiniging met roterende reiniger<br />
+                                                            Geen stoomoptie<br />
+                                                            1 reinigingsronde, geen nacontrole<br />
+                                                            Geen goot- of schouwreiniging inbegrepen<br />
+                                                        </li>
+                                                        <li className="mb-4">
+                                                            <span className="text-odiyoo">3. Nabehandeling</span><br />
+                                                            Geen coating inbegrepen<br />
+                                                            Opruimen werfzone met basisreiniging<br />
+                                                        </li>
+                                                        <li className="mb-4">
+                                                            <span className="text-odiyoo">4. Eindschoonmaak niet inbegrepen</span>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="mt-4">
                                             <h4 className="font-medium mb-2">Projectfoto's</h4>
                                             <div className="grid grid-cols-3 gap-2">
-                                                {contractor.contractor_project_images.map((img, index) => (
+                                                {contractor.contractor_project_images.map((img: string, index: number) => (
                                                     <img
                                                         key={index}
                                                         src={img || "/placeholder.svg"}

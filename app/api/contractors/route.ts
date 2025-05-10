@@ -1,4 +1,4 @@
-import { getContractors, createContractor, createContractorSchema } from "@/domain/contractors";
+import { getContractors, createContractor, contractorAddSchema } from "@/domain/contractors";
 import { NextRequest, NextResponse } from 'next/server';
 
 
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   if (req.method !== "POST") return new NextResponse(null, {status: 405});
 
   const body = await req.json();
-  const parsed = createContractorSchema.safeParse(body);
+  const parsed = contractorAddSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ message: "Ongeldige invoer" }, { status: 400 })
   }

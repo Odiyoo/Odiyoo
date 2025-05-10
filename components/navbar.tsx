@@ -45,11 +45,15 @@ export default function Navbar() {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem>
-                  Inloggen
+                  <Link href="/login">
+                    Inloggen
+                  </Link>
                   <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  Aanmelden
+                  <Link href="/signup">
+                    Aanmelden
+                  </Link>
                   <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuGroup>

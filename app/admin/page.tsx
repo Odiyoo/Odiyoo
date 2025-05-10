@@ -171,18 +171,6 @@ export default function AdminDashboardPage() {
                     Gebruikers beheren
                   </Button>
                 </Link>
-                <Link href="/admin/settings">
-                  <Button variant="outline" className="w-full justify-start">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Instellingen
-                  </Button>
-                </Link>
-                <Link href="/admin/analytics">
-                  <Button variant="outline" className="w-full justify-start">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    Statistieken
-                  </Button>
-                </Link>
                 <Link href="/">
                   <Button variant="outline" className="w-full justify-start">
                     <LayoutDashboard className="mr-2 h-4 w-4" />

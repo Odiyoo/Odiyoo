@@ -36,10 +36,10 @@ export default function SmartQuoteBar() {
         <article className="max-w-3xl mx-auto text-center space-y-6 my-8">
 
             <h1 className="text-muted-foreground">Ga meteen aan de slag met onze self-service module</h1>
-            <div className={`flex rounded-full border border-gray-200 shadow-lg gap-1 my-2 bg-odiyoo border-odiyoo ${hoverStyle}`}>
+            <div className={`flex rounded-full transition ease-in border border-gray-200 shadow-lg gap-1 my-2 bg-odiyoo border-odiyoo ${hoverStyle}`}>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <div className={`text-left p-4 px-6 rounded-full bg-white rounded-r-none transition-all ease-in cursor-pointer focus:border active:border border-odiyoo hover:bg-gray-400 w-1/3 ${service !== 'unselected' ? "bg-gray-300" : ''}`}>
+                        <div className={`text-left p-4 px-6 rounded-full bg-white rounded-r-none transition-all ease-in cursor-pointer focus:border active:border border-odiyoo hover:bg-gray-200 w-1/3 ${service !== 'unselected' ? "bg-gray-300" : ''}`}>
                             <h4 className="text-odiyoo">Wat heb je nodig?</h4>
                             <p className="text-muted-foreground">{service === 'unselected' ? "Kies hier..." : capitalize(service)}</p>
                         </div>
@@ -130,7 +130,7 @@ export default function SmartQuoteBar() {
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <div className="mr-4 place-content-center">
-                    <Button variant="default" className="rounded-full self-center justify-self-end" size="icon" disabled={hasKnownMeasurements === undefined} onClick={sendToForm} onMouseEnter={() => {setHoverStyle('bg-#073358b3')}} onMouseLeave={() => {setHoverStyle('')}}>
+                    <Button variant="default" className={`rounded-full self-center justify-self-end ${hoverStyle}`} size="icon" disabled={hasKnownMeasurements === undefined} onClick={sendToForm} onMouseEnter={() => {setHoverStyle('bg-[#073358b3]')}} onMouseLeave={() => {setHoverStyle('')}}>
                         <SearchIcon />
                     </Button>
                 </div>
