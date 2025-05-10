@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Edit, Eye, Home, MoreHorizontal, Plus, Search, Trash2 } from "lucide-react"
 
@@ -17,6 +17,19 @@ import {
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ExtendedContractor } from "@/domain/contractors"
+import moment from "moment"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 // Sample contractors data
 const contractorsData = [
@@ -74,20 +87,36 @@ const contractorsData = [
 export default function ContractorsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState("all")
+  const [contractors, setContractors] = useState<ExtendedContractor[]>([])
 
   // Filter contractors based on search term and active tab
-  const filteredContractors = contractorsData.filter((contractor) => {
+  const filteredContractors = contractors.filter((contractor) => {
     const matchesSearch =
       contractor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contractor.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contractor.email.toLowerCase().includes(searchTerm.toLowerCase())
+      contractor.city.toLowerCase().includes(searchTerm.toLowerCase())
 
     if (activeTab === "all") return matchesSearch
-    if (activeTab === "active") return matchesSearch && contractor.status === "active"
-    if (activeTab === "inactive") return matchesSearch && contractor.status === "inactive"
+    if (activeTab === "active") return matchesSearch && contractor.status
+    if (activeTab === "inactive") return matchesSearch && !contractor.status
 
     return matchesSearch
   })
+
+  const fetchContractors = async () => {
+
+    const res = await fetch("/api/contractors", {
+      method: "GET",
+    });
+
+    const result = await res.json();
+    setContractors(result.data || []);
+
+    return result.data || [];
+  };
+
+  useEffect(() => {
+    fetchContractors()
+  }, [])
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -160,7 +189,6 @@ export default function ContractorsPage() {
                     <TableRow>
                       <TableHead>Aannemer</TableHead>
                       <TableHead>Locatie</TableHead>
-                      <TableHead>E-mail</TableHead>
                       <TableHead>Beoordeling</TableHead>
                       <TableHead>Ervaring</TableHead>
                       <TableHead>Status</TableHead>
@@ -178,33 +206,33 @@ export default function ContractorsPage() {
                       filteredContractors.map((contractor) => (
                         <TableRow key={contractor.id}>
                           <TableCell>
-                            <div className="flex items-center gap-3">
-                              <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-100">
-                                <img
-                                  src={contractor.image || "/placeholder.svg"}
-                                  alt={contractor.name}
-                                  className="h-full w-full object-cover"
-                                />
+                            <Link href={`contractors/${contractor.id}`}>
+                              <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+                                  <img
+                                    src={contractor.profile_image || "/placeholder.svg"}
+                                    alt={contractor.name || "Afbeelding aannemer"}
+                                    className="h-full w-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="font-medium">{contractor.name}</div>
+                                  <div className="text-xs text-muted-foreground">ID: {contractor.id}</div>
+                                </div>
                               </div>
-                              <div>
-                                <div className="font-medium">{contractor.name}</div>
-                                <div className="text-xs text-muted-foreground">ID: {contractor.id}</div>
-                              </div>
-                            </div>
+                            </Link>
                           </TableCell>
                           <TableCell>{contractor.city}</TableCell>
-                          <TableCell>{contractor.email}</TableCell>
                           <TableCell>{contractor.rating} / 5</TableCell>
-                          <TableCell>{contractor.experience}</TableCell>
+                          <TableCell>{moment().subtract(contractor.company_start_year, 'years').year()}</TableCell>
                           <TableCell>
                             <div
-                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                contractor.status === "active"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-gray-100 text-gray-800"
-                              }`}
+                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contractor.status
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                                }`}
                             >
-                              {contractor.status === "active" ? "Actief" : "Inactief"}
+                              {contractor.status ? "Actief" : "Inactief"}
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
@@ -217,19 +245,28 @@ export default function ContractorsPage() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Acties</DropdownMenuLabel>
-                                <DropdownMenuItem>
-                                  <Eye className="mr-2 h-4 w-4" />
-                                  <span>Bekijken</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Edit className="mr-2 h-4 w-4" />
-                                  <span>Bewerken</span>
-                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-red-600">
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  <span>Verwijderen</span>
-                                </DropdownMenuItem>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="text-red-600">
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      <span>Verwijderen</span>
+                                    </DropdownMenuItem>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete your
+                                        account and remove your data from our servers.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction>Continue</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>

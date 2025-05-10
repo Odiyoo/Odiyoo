@@ -1,12 +1,43 @@
 "use client"
 
 import Link from "next/link"
-import { BarChart3, Building, FileText, Home, LayoutDashboard, Settings, Users } from "lucide-react"
+import { BarChart3, Building, FileText, Home, LayoutDashboard, Loader2, Settings, Users } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react"
+import { displayPrice } from "@/domain/finance"
+import moment from "moment"
 
 export default function AdminDashboardPage() {
+
+  const [amountOfQuotes, setAmountOfQuotes] = useState(0);
+  const [amountOfActiveContractors, setAmountOfActiveContractors] = useState(0);
+  const [amountOfCustomers, setAmountOfCustomers] = useState(0);
+  const [recentQuotes, setRecentQuotes] = useState<{id: number, quote_number: number, total_price: number, created_at: Date}[]>([]);
+  const [isStaticticsLoading, setIsStatisticsLoading] = useState(true);
+
+  useEffect(() => {
+
+    async function getStatistics() {
+
+      const res = await fetch("/api/admin/stats", {
+        method: "GET",
+      });
+      const { data } = await res.json();
+      
+      setAmountOfQuotes(data.coldQuoteCount)
+      setAmountOfActiveContractors(data.activeContractorCount)
+      setAmountOfCustomers(data.customerCount)
+      setRecentQuotes(data.recentColdQuotes)
+    }
+    
+    getStatistics()
+    setIsStatisticsLoading(false);
+    console.log(amountOfActiveContractors)
+
+  }, [])
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="bg-white py-4 shadow-sm">
@@ -30,7 +61,7 @@ export default function AdminDashboardPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <span className="text-sm font-medium">Admin</span>
+            <span className="text-sm font-medium">Admin paneel</span>
           </div>
         </div>
       </header>
@@ -49,7 +80,7 @@ export default function AdminDashboardPage() {
               <CardTitle className="text-sm font-medium">Totaal Offertes</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">1,248</div>
+              <div className="text-2xl font-bold">{isStaticticsLoading ? <Loader2 className="animate-spin"/> : amountOfQuotes}</div>
               <p className="text-xs text-muted-foreground">+12.5% t.o.v. vorige maand</p>
             </CardContent>
           </Card>
@@ -58,7 +89,7 @@ export default function AdminDashboardPage() {
               <CardTitle className="text-sm font-medium">Actieve Aannemers</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">24</div>
+              <div className="text-2xl font-bold">{isStaticticsLoading ? <Loader2 className="animate-spin"/> : amountOfActiveContractors}</div>
               <p className="text-xs text-muted-foreground">+2 nieuwe deze maand</p>
             </CardContent>
           </Card>
@@ -67,7 +98,7 @@ export default function AdminDashboardPage() {
               <CardTitle className="text-sm font-medium">Gebruikers</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">3,782</div>
+              <div className="text-2xl font-bold">{isStaticticsLoading ? <Loader2 className="animate-spin"/> : amountOfCustomers}</div>
               <p className="text-xs text-muted-foreground">+8.2% t.o.v. vorige maand</p>
             </CardContent>
           </Card>
@@ -76,8 +107,8 @@ export default function AdminDashboardPage() {
               <CardTitle className="text-sm font-medium">Conversie Ratio</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">12.8%</div>
-              <p className="text-xs text-muted-foreground">+2.1% t.o.v. vorige maand</p>
+              <div className="text-2xl font-bold">-</div>
+              <p className="text-xs text-muted-foreground">-</p>
             </CardContent>
           </Card>
         </div>
@@ -90,18 +121,18 @@ export default function AdminDashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-center justify-between">
+                {recentQuotes.map((quote, number) => (
+                  <div key={number} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <FileText className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <div className="font-medium">Offerte #{1000 + i}</div>
+                        <div className="font-medium">Offerte #{quote.quote_number}</div>
                         <div className="text-xs text-muted-foreground">
-                          {new Date(2023, 3, 20 - i).toLocaleDateString("nl-NL")}
+                          {moment(quote.created_at).calendar()}
                         </div>
                       </div>
                     </div>
-                    <div className="text-sm font-medium">€{(Math.random() * 10000 + 5000).toFixed(2)}</div>
+                    <div className="text-sm font-medium">€{displayPrice(quote.total_price)}</div>
                   </div>
                 ))}
               </div>
@@ -138,18 +169,6 @@ export default function AdminDashboardPage() {
                   <Button variant="outline" className="w-full justify-start">
                     <Users className="mr-2 h-4 w-4" />
                     Gebruikers beheren
-                  </Button>
-                </Link>
-                <Link href="/admin/settings">
-                  <Button variant="outline" className="w-full justify-start">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Instellingen
-                  </Button>
-                </Link>
-                <Link href="/admin/analytics">
-                  <Button variant="outline" className="w-full justify-start">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    Statistieken
                   </Button>
                 </Link>
                 <Link href="/">

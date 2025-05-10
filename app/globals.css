@@ -2,8 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "DM Sans";
+  src:
+    local("DM Sans"),
+    url("/fonts/DeepMindSerif_v5.003/DeepMindSerifDisplay-Regular.ttf") format("truetype"),
+}
+
+@font-face {
+  font-family: "IBM Plex Serif";
+  src:
+    local("IBM Plex Serif"),
+    url("/fonts/ibm-plex-sans/fonts/complete/otf/IBMPlexSans-Regular.otf") format("opentype"),
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: "DM Sans", "IBM Plex Serif", Arial, sans-serif; */
+  font-family: "IBM Plex Serif", Arial, sans-serif;
+}
+
+.heading-typography {
+  font-family: "IBM Plex Serif";
 }
 
 @layer utilities {
@@ -26,7 +45,7 @@ body {
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
+    --accent: 0 0% 92.1%;
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -47,6 +66,11 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --odiyoo: #073358;
+    --odiyoo-secondary: #ED2929;
+    --odiyoo-tertiary: #F6F6F6;
+    --odiyoo-gradient: linear-gradient(256.3deg, var(--odiyoo) 0%, var(--odiyoo-secondary) 100%);
+    --odiyoo-gradient-alt: linear-gradient(256.3deg, var(--odiyoo) 0%, var(--odiyoo-tertiary) 100%);
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -81,6 +105,11 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --odiyoo: #073358; /* TODO: make compatible for darkmode */
+    --odiyoo-secondary: #ED2929;
+    --odiyoo-tertiary: #F6F6F6;
+    --odiyoo-gradient: linear-gradient(256.3deg, var(--odiyoo) 0%, var(--odiyoo-secondary) 100%);
+    --odiyoo-gradient-alt: linear-gradient(256.3deg, var(--odiyoo) 0%, var(--odiyoo-tertiary) 100%);
   }
 }
 
@@ -91,4 +120,11 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@theme inline {
+  --color-odiyoo: var(--odiyoo);
+  --color-odiyoo-secondary: var(--odiyoo-secondary);
+  --color-odiyoo-tertiary: var(--odiyoo-tertiary);
+  --color-odiyoo-foreground: var(--odiyoo-foreground);
 }

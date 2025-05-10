@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import moment from 'moment'
+import 'moment/locale/nl'
+
+moment.locale('nl')
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'Odiyoo | Uw betrouwbare partner in dakreiniging',
+  description: 'Uw betrouwbare partner in dakreiniging en dakrenovaties',
 }
 
 export default function RootLayout({
