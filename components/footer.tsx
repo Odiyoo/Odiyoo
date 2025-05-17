@@ -32,28 +32,6 @@ export default function Footer() {
                                 </Link>
                             </li>
                         </ul>
-                        <h3 className="my-4 mt-12 text-lg font-bold text-white">We komen graag met je in contact</h3>
-                        <ul className="space-y-2">
-                            <li className="font-medium">{BUSINESS_NAME}</li>
-                            <li className="flex flex-row gap-2"><BriefcaseBusiness /> {BTW}</li>
-                            <li className="flex flex-row gap-2"><MailOpen /> <a href={`mailto:${CUSTOMER_SUPPORT_MAIL}`}>{CUSTOMER_SUPPORT_MAIL}</a></li>
-                            <li className="flex flex-row gap-2"><PhoneCall /> <a href={`tel:${CUSTOMER_SUPPORT_PHONE}`}>{CUSTOMER_SUPPORT_PHONE}</a></li>
-                        </ul>
-                        <ul>
-                            <li className="mt-8">
-                                <span className="font-bold block">Openingstijden:</span>
-                                <span className="block">Maandag - Vrijdag: 07.30 - 17.00</span>
-                                <span className="block">Zaterdag: 08.00 - 12.30</span>
-                            </li>
-                        </ul>
-                        <div className="flex flex-row gap-4 mt-8">
-                        <Link href="https://instagram.com/odiyoo" target="_blank" className="hover:text-white">
-                            <Instagram />
-                        </Link>
-                        <Link href="https://facebook.com/odiyoo" target="_blank" className="hover:text-white">
-                            <Facebook />
-                        </Link>
-                        </div>
                     </div>
                     <div>
                         <h3 className="mb-4 text-lg font-bold text-white">Voor klanten</h3>
@@ -106,7 +84,31 @@ export default function Footer() {
                         </ul>
                     </div>
                 </div>
-                <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+                <div className="my-8">
+                    <h3 className="my-4 text-lg font-bold text-white">We komen graag met je in contact</h3>
+                    <ul className="space-y-2">
+                        <li className="font-medium">{BUSINESS_NAME}</li>
+                        <li className="flex flex-row gap-2"><BriefcaseBusiness /> {BTW}</li>
+                        <li className="flex flex-row gap-2"><MailOpen /> <a href={`mailto:${CUSTOMER_SUPPORT_MAIL}`}>{CUSTOMER_SUPPORT_MAIL}</a></li>
+                        <li className="flex flex-row gap-2"><PhoneCall /> <a href={`tel:${CUSTOMER_SUPPORT_PHONE}`}>{CUSTOMER_SUPPORT_PHONE}</a></li>
+                    </ul>
+                    <ul>
+                        <li className="mt-8">
+                            <span className="font-bold block">Openingstijden:</span>
+                            <span className="block">Maandag - Vrijdag: 07.30 - 17.00</span>
+                            <span className="block">Zaterdag: 08.00 - 12.30</span>
+                        </li>
+                    </ul>
+                    <div className="flex flex-row gap-4 mt-8">
+                        <Link href="https://instagram.com/" target="_blank" className="hover:text-white">
+                            <Instagram />
+                        </Link>
+                        <Link href="https://www.facebook.com/p/Odiyoocom-61559361823129/" target="_blank" className="hover:text-white">
+                            <Facebook />
+                        </Link>
+                    </div>
+                </div>
+                <div className="flex justify-center gap-4 text-sm text-muted-foreground text-center">
                     <Link href="/" className="hover:text-white">
                         Algemene voorwaarden
                     </Link>

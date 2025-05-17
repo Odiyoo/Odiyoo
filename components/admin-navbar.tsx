@@ -5,7 +5,7 @@ import {
 import Link from "next/link"
 import FullLogo from "./full-logo";
 
-export type ActiveLink = 'dashboard' | 'aannemers' | 'offertes' | 'gebruikers' | 'leads' | 'instellingen';
+export type ActiveLink = '' | 'dashboard' | 'aannemers' | 'offertes' | 'gebruikers' | 'leads' | 'instellingen';
 
 export default function Navbar({activeLink}: {activeLink: ActiveLink}) {
 

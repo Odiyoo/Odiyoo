@@ -5,24 +5,20 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
-import { useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
+import { StandaloneSearchBox } from '@react-google-maps/api';
 import { FormData } from "./Form";
 
 type StepOneProps = {
     formData: FormData,
     setFormData: any,
     handleStep1Complete: any,
+    hasGmapsLoaded: boolean,
 };
 
-export default function StepOne({ formData, setFormData, handleStep1Complete }: StepOneProps) {
+export default function StepOne({ formData, setFormData, handleStep1Complete, hasGmapsLoaded }: StepOneProps) {
 
     const addressInputRef = useRef(null)
     const addressRef = useRef<any>(null)
-    const { isLoaded: hasGmapsLoaded } = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: "AIzaSyARTWcUUS8RHo9FZOCA4bnF8VxXUU0wcRk", //process.env.NEXT_PUBLIC_GMAPS_API_KEY!,
-        libraries: ['places']
-    })
 
     const toggleDakreinigingOptions = (name: string) => {
         setFormData((prev: FormData) => ({
@@ -51,7 +47,8 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
     }
 
     const handleOnPlacesChanged = () => {
-        let address = addressRef.current.getPlaces();
+        let address = addressRef.current.getPlaces()[0].formatted_address;
+        setFormData((prev: any) => ({ ...prev, address }))
     }
 
     return (

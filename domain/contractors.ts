@@ -152,7 +152,7 @@ export const calculateDakreinigingQuoteForContractor = (roofSize: number, contra
   let costBasedOnSurface = 0
 
   if (roofSize > DAKREINIGINGS_START_METERS) {
-    costBasedOnSurface = roofSize * contractor.dakreiniging_prijs_per_sq_meter;
+    costBasedOnSurface = (roofSize - DAKREINIGINGS_START_METERS) * contractor.dakreiniging_prijs_per_sq_meter;
   }
 
   const totalPrice = contractor.dakreiniging_start_price + costBasedOnSurface

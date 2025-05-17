@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createClient } from '@/util/supabase/server';
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, User } from "@supabase/supabase-js";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Ongeldig e-mailadres" }),
@@ -29,14 +29,14 @@ export async function login(credentials: LoginSchema): Promise<LoginResponse> {
     const supabase = await createClient();
     //supabase.auth.setSession()
     const { error, data } = await supabase.auth.signInWithPassword(credentials);
-    return { error, data: { user_role: data.user?.role} };
+    return { error, data: { user_role: data.user?.role } };
 }
 
 export async function signup(data: SignupSchema) {
     const supabase = await createClient();
     // autoconfirm on? execute above, autoconfirm off? show text about confirmation mail sent
     const { data: signup_data, error } = await supabase.auth.signUp({ email: data.email, password: data.password });
-    console.log(signup_data)
+
     if (!error) {
         await supabase.from('customers').insert({ id: signup_data.user!.id, firstname: data.firstname, lastname: data.lastname });
     }
@@ -46,14 +46,14 @@ export async function signup(data: SignupSchema) {
 export async function getRole(user_id: string) {
     const supabase = await createClient();
     const { data: userProfile } = await supabase
-    .from('user_info')
-    .select(`
+        .from('user_info')
+        .select(`
         user_roles (
             role
         )
     `)
-    .eq('id', user_id)
-    .single();
+        .eq('id', user_id)
+        .single();
 
     return userProfile?.user_roles.role;
 }

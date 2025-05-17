@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
   const parsed = quoteDakreinigingAddSchema.safeParse(body);
+  console.log(parsed.error)
   if (!parsed.success) {
     return NextResponse.json({ message: "Ongeldige invoer" }, { status: 400 })
   }

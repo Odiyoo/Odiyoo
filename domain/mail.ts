@@ -28,6 +28,7 @@ export const sendMail = async ({ from, to, subject, html, react }: SendMailProps
         subject: `Odiyoo | ${subject}`,
         html,
         react,
+        // TODO: attachments
     })
     console.log(`Sent mail to ${to}`);
 }

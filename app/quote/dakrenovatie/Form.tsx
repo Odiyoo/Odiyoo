@@ -44,7 +44,7 @@ export type FormData = {
     dakraam: DakraamChoice,
 }
 
-export default function DakrenovatieForm() {
+export default function DakrenovatieForm({hasGmapsLoaded}: {hasGmapsLoaded: boolean}) {
 
     const [step, setStep] = useState(1)
     const [formData, setFormData] = useState<FormData>({
@@ -443,7 +443,7 @@ export default function DakrenovatieForm() {
                 <Card className="w-full">
                     {step === 1 && (
                         <Suspense>
-                            <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData} />
+                            <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData} hasGmapsLoaded={hasGmapsLoaded}/>
                         </Suspense>
                     )}
 
@@ -472,15 +472,15 @@ export default function DakrenovatieForm() {
                                             <span className="font-medium">€{displayPrice(formData.roofSize * 12)}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Afbraakwerken (€{displayPrice(formData.selectedContractor.afbraakwerken_per_sq_meter)}/m²):</span>
+                                            <span>Afbraakwerken (€{displayPrice(formData.selectedContractor!.afbraakwerken_per_sq_meter)}/m²):</span>
                                             <span className="font-medium">€{displayPrice(quoteData.afbraakCost).toLocaleString()}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Timmerwerken (€{displayPrice(formData.selectedContractor.timmerwerken_per_sq_meter)}/m²):</span>
+                                            <span>Timmerwerken (€{displayPrice(formData.selectedContractor!.timmerwerken_per_sq_meter)}/m²):</span>
                                             <span className="font-medium">€{displayPrice(quoteData.timmerCost).toLocaleString()}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Dakbedekking (€{displayPrice(formData.selectedContractor.dakbedekking_per_sq_meter)}/m²):</span>
+                                            <span>Dakbedekking (€{displayPrice(formData.selectedContractor!.dakbedekking_per_sq_meter)}/m²):</span>
                                             <span className="font-medium">€{displayPrice(quoteData.materialCost).toLocaleString()}</span>
                                         </div>
                                         {formData.insulation !== 'geen' && <div className="flex justify-between">

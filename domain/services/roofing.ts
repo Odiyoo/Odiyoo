@@ -1,7 +1,8 @@
 import { createClient } from "@/util/supabase/server";
 import { z } from "zod";
-import { ContractorDakrenovatieQuote } from "../contractors";
+import { ContractorDakreinigingQuote, ContractorDakrenovatieQuote } from "../contractors";
 import { FormData } from '../../app/quote/dakrenovatie/Form'
+import { FormData as DakReinigingFormData } from '../../app/quote/dakreiniging/Form'
 import { Tables } from "@/lib/supabase.types";
 
 export type AppointmentRequest = Tables<'appointment_requests'>;
@@ -46,16 +47,13 @@ export async function createQuote(cold_quote: QuoteAddSchema): Promise<QuoteAddR
 /* Create Dakreiniging quote */
 const quoteDakreinigingAddSchema = z.object({
     address: z.string().min(4, { message: "Ongeldig adres" }),
-    email: z.string().email({ message: "Ongeldig e-mailadres" }),
-    surface_in_sq_meter: z.number().min(1, { message: "Ongeldige waarde" }),
+    surface_in_sq_meter: z.coerce.number().min(1, { message: "Ongeldige waarde" }),
     contractor_id: z.string().min(0, { message: "Ongeldige waarde" }),
-    roofing_type_id: z.number().min(0, { message: "Ongeldige waarde" }),
-    quote_number: z.number().min(0, { message: "Ongeldige waarde" }),
     total_price: z.number().min(0, { message: "Ongeldige waarde" }),
     has_gootsystemen: z.boolean().default(false),
     has_dakramen: z.boolean().default(false),
     has_zonnepanelen: z.boolean().default(false),
-    has_dakbekking: z.boolean().default(false),
+    has_dakbedekking: z.boolean().default(false),
     has_schoorsteen: z.boolean().default(false),
     has_aquaplan: z.boolean().default(false),
     option_unknown: z.boolean().default(false),
@@ -65,15 +63,30 @@ type QuoteDakReinigingAddSchema = z.infer<typeof quoteDakreinigingAddSchema>;
 export { quoteDakreinigingAddSchema };
 export type { QuoteDakReinigingAddSchema };
 
-export async function createDakreinigingQuote(cold_quote: QuoteDakReinigingAddSchema): Promise<QuoteAddResponse> {
+export async function createDakreinigingQuote(quote: QuoteDakReinigingAddSchema): Promise<QuoteAddResponse> {
     const supabase = await createClient();
 
-    // insert contractor
-    const { error, data } = await supabase.from('cold_quotes').insert(
-        cold_quote
-    );
+    const { error, data } = await supabase.from('dakreiniging_quotes').insert(
+        quote
+    ).select('id').single();
 
     return { error, data };
+}
+
+export function convertToDakreinigingQuoteSchema(formData: DakReinigingFormData, quoteData: ContractorDakreinigingQuote): QuoteDakReinigingAddSchema {
+    return {
+        address: formData.address,
+        surface_in_sq_meter: formData.roofSize,
+        contractor_id: formData.selectedContractor!.id,
+        has_gootsystemen: formData.options.gootsystemen,
+        has_dakramen: formData.options.veluxramen,
+        has_zonnepanelen: formData.options.zonnepanelen,
+        has_dakbedekking: formData.options.dakbedekking,
+        has_schoorsteen: formData.options.schoorsteen,
+        has_aquaplan: formData.options.aquaplan,
+        option_unknown: formData.options.optionUnknown,
+        total_price: quoteData.totalPrice,
+    }
 }
 
 /* Create Dakrenovatie quote */
@@ -86,7 +99,7 @@ const quoteDakrenovatieExtrasSchema = z.object({
 })
 const quoteDakrenovatieAddSchema = z.object({
     address: z.string().min(4, { message: "Ongeldig adres" }),
-    surface_in_sq_meter: z.number().min(1, { message: "Ongeldige waarde" }),
+    surface_in_sq_meter: z.coerce.number().min(1, { message: "Ongeldige waarde" }),
     contractor_id: z.string().min(0, { message: "Ongeldige waarde" }),
     extras: quoteDakrenovatieExtrasSchema,
     roofing_type_id: z.number().min(0, { message: "Ongeldige waarde" }),
@@ -138,7 +151,7 @@ export function convertToDakrenovatieQuoteSchema(formData: FormData, quoteData: 
     return {
         address: formData.address,
         surface_in_sq_meter: formData.roofSize,
-        contractor_id: formData.selectedContractor.id,
+        contractor_id: formData.selectedContractor!.id,
         extras: {
             has_dak_isolatie: formData.extras.insulation,
             has_gevel_bekleding: formData.extras.facadeCladding,
@@ -170,7 +183,8 @@ type AppointmentRequestSchema = z.infer<typeof appointmentRequestSchema>;
 
 export { appointmentRequestSchema };
 export type { AppointmentRequestSchema };
-export type AppointmentRequestResponse = { error: any, data: { id: string } };
+export type AppointmentRequestResponse = { error: any, data: { id: string } | null };
+export type AppointmentRequestsResponse = { error: any, data: any[] | null };
 export type AppointmentRequestStatus = 'dakinspectie_gevraagd' | 'offerte_aangemaakt';
 
 export async function createAppointmentRequest(customerData: AppointmentRequestSchema): Promise<AppointmentRequestResponse> {
@@ -181,20 +195,22 @@ export async function createAppointmentRequest(customerData: AppointmentRequestS
         customerDataInsert
     ).select('id').single();
 
-    const { error: join_error, data: join_data } = await supabase.from('appointment_quotes').insert(
-        {
-            appointment_id: data.id,
-            quote_type: quote_type,
-            quote_id: quote_id
-        }
-    );
+    if (!error) {
+        const { error: join_error, data: join_data } = await supabase.from('appointment_quotes').insert(
+            {
+                appointment_id: data.id,
+                quote_type: quote_type,
+                quote_id: quote_id
+            }
+        );
+    }
 
     return { error, data };
 }
-export async function getAppointmentRequests(): Promise<AppointmentRequestResponse> {
+export async function getAppointmentRequests(): Promise<AppointmentRequestsResponse> {
     const supabase = await createClient();
 
     const { error, data } = await supabase.from('appointment_requests').select('*, appointment_quotes (*)');
-    console.log(data)
+
     return { error, data };
 }
