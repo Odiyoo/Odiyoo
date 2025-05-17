@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react"
 import Link from "next/link"
-import { Check } from "lucide-react"
+import { Check, Loader } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,12 +13,12 @@ import { Confetti } from "@/components/confetti"
 import Sidebar from "./Sidebar"
 import StepOne from "./StepOne"
 import StepTwo from "./StepTwo"
-import { calculateDakreinigingQuoteForContractor, calculateInsulationCost, ContractorDakreinigingQuote, ExtendedContractor } from "@/domain/contractors"
+import { calculateDakreinigingQuoteForContractor, calculateInsulationCost, ContractorDakreinigingQuote, DAKREINIGINGS_START_METERS, ExtendedContractor } from "@/domain/contractors"
 import { displayPrice, taxPercentage, taxPercentageDisplay } from "@/domain/finance"
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { appointmentRequestSchema, AppointmentRequestSchema, QuoteDakReinigingAddSchema } from "@/domain/services/roofing"
+import { appointmentRequestSchema, AppointmentRequestSchema, convertToDakreinigingQuoteSchema, QuoteDakReinigingAddSchema } from "@/domain/services/roofing"
 
 export type FormData = {
     address: string,
@@ -32,11 +32,10 @@ export type FormData = {
         aquaplan: boolean,
         optionUnknown: boolean,
     }
-    email: string,
     selectedContractor: ExtendedContractor | null,
 }
 
-export default function DakreinigingForm() {
+export default function DakreinigingForm({hasGmapsLoaded}: {hasGmapsLoaded: boolean}) {
 
     const [step, setStep] = useState(1)
     const [formData, setFormData] = useState<FormData>({
@@ -52,7 +51,6 @@ export default function DakreinigingForm() {
             aquaplan: false,
             optionUnknown: false,
         },
-        email: "",
     })
     const [quoteGenerated, setQuoteGenerated] = useState(false)
     const [quoteData, setQuoteData] = useState<ContractorDakreinigingQuote>({
@@ -77,29 +75,33 @@ export default function DakreinigingForm() {
         resolver: zodResolver(appointmentRequestSchema),
         defaultValues: {
             fullname: "",
-            address: "",
+            address: formData.address,
             email: "",
             telephone: "",
+            status: "offerte_aangemaakt",
         },
     });
 
     // quote: QuoteDakReinigingAddSchema
     const onSubmit = async (data: AppointmentRequestSchema) => {
-
+        setIsSubmissionLoading(true)
         const quote_res = await fetch("/api/quote/dakreiniging", {
             method: "POST",
-            body: JSON.stringify(quoteData),
+            body: JSON.stringify(convertToDakreinigingQuoteSchema(formData, quoteData)),
             headers: {
                 "Content-Type": "application/json",
             },
         });
 
+        if (!quote_res.ok) {
+            form.setError("fullname", { message: "Er is iets fout gelopen." });
+            setIsSubmissionLoading(false)
+            return;
+        }
+
         const quote_result: any = await quote_res.json();
         const quote_id: string = quote_result.data.id;
 
-        if (!quote_res.ok) {
-            form.setError("fullname", { message: "Er is iets fout gelopen." });
-        }
         data.quote_id = quote_id
         data.quote_type = 'dakrenovatie'
         const appointment_res = await fetch("/api/quote/ask-appointment", {
@@ -114,6 +116,8 @@ export default function DakreinigingForm() {
 
         if (!appointment_res.ok) {
             form.setError("fullname", { message: "Er is iets fout gelopen." });
+            setIsSubmissionLoading(false)
+            return;
         } else {
             setIsSubmissionLoading(false)
             setInfoSubmitted(true)
@@ -214,6 +218,10 @@ export default function DakreinigingForm() {
 
     // Handle step 2 completion
     const handleStep2Complete = () => {
+        // reset form
+        setInfoSubmitted(false);
+        form.reset();
+
         generateQuote();
     }
 
@@ -295,7 +303,7 @@ export default function DakreinigingForm() {
                     <Card className="w-full">
                         {step === 1 && (
                             <Suspense>
-                                <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData} />
+                                <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData} hasGmapsLoaded={hasGmapsLoaded}/>
                             </Suspense>
                         )}
 
@@ -326,6 +334,18 @@ export default function DakreinigingForm() {
                                                     <li>Nabehandeling & Bescherming</li>
                                                     <li>Oplevering & Nazorg</li>
                                                 </ol>
+                                            </div>
+                                            <Separator />
+                                            <div className="flex justify-between">
+                                                <span>Startprijs:</span>
+                                                <span>€{displayPrice(quoteData.startPrice)}</span>
+                                            </div>
+                                            <div className={`flex justify-between ${formData.roofSize > DAKREINIGINGS_START_METERS ? '' : 'hidden'}`}>
+                                                <div>
+                                                    <span>€{formData.selectedContractor!.dakreiniging_prijs_per_sq_meter}/m²</span>
+                                                    <span className="text-muted-foreground">Dakoppervlakte &gt; ({DAKREINIGINGS_START_METERS})</span>
+                                                </div>
+                                                <span>€{displayPrice(quoteData.costBasedOnSurface)}</span>
                                             </div>
                                             <Separator />
                                             <div className="flex justify-between">
@@ -405,12 +425,12 @@ export default function DakreinigingForm() {
                                                 <p className="text-center font-medium">Wat wil je nu doen?</p>
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <div className="border border-dashed border-primary/50 rounded-lg p-4 text-center cursor-pointer hover:bg-primary/5 transition-colors">
-                                                        <h4 className="font-medium mb-2">Hoe te besparen op je dakwerken</h4>
-                                                        <Link href="/faq" className="text-sm text-muted-foreground">
+                                                    <Link href="/faq" className="text-sm text-muted-foreground">
+                                                        <div className="border border-dashed border-primary/50 rounded-lg p-4 text-center cursor-pointer hover:bg-primary/5 transition-colors">
+                                                            <h4 className="font-medium mb-2">Hoe te besparen op je dakwerken</h4>
                                                             Ontdek tips en trucs om kosten te besparen bij je dakproject
-                                                        </Link>
-                                                    </div>
+                                                        </div>
+                                                    </Link>
 
                                                     <Link href="/signup" className="block">
                                                         <div className="border border-dashed border-primary/50 rounded-lg p-4 text-center cursor-pointer hover:bg-primary/5 transition-colors">
@@ -486,7 +506,7 @@ export default function DakreinigingForm() {
                                                         />
                                                     </div>
                                                     <Button type="submit" className="w-full mt-12">
-                                                        Offerte ontvangen
+                                                        {isSubmissionLoading ? <Loader className="animate-spin" /> : "Offerte ontvangen"}
                                                     </Button>
                                                 </form>
                                             </Form>

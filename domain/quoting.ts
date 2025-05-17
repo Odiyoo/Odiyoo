@@ -21,5 +21,11 @@ export async function getQuotes(): Promise<{
         .from('all_quotes')
         .select();
 
+    /*
+        TODO:
+        - Join with appointment_requests & appointment_quotes for status?
+        - What about appointments without quotes? Seperate query? Seperate page?
+    */
+
     return { data: res.data, error: res.error }
 }
