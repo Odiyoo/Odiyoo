@@ -144,8 +144,8 @@ export default function SignupPage() {
                 <Button type="submit" className="w-full mt-6">
                   {loading ? "..." : "Account aanmaken"}
                 </Button>
-                <Separator className="my-4" />
-                <div className="my-4">
+                <Separator className="my-4 hidden" />
+                <div className="my-4 hidden">
                   <Button variant="outline" className="w-full mb-2">
                     Registreren met Google
                   </Button>
