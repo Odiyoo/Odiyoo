@@ -63,7 +63,7 @@ export default function LoginPage() {
         <Card className="mx-auto w-full max-w-md">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold">Inloggen bij Odiyoo</CardTitle>
-            <CardDescription>Voer je e-mail en wachtwoord in om toegang te krijgen tot je account</CardDescription>
+            <CardDescription>Vul je e-mail en wachtwoord in om toegang te krijgen tot je account</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Form {...form}>
@@ -104,11 +104,11 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full mt-6">
+                <Button type="submit" className="w-full mt-4">
                   {loading ? "Inloggen..." : "Inloggen"}
                 </Button>
-                <Separator className="my-4" />
-                <div>
+                <Separator className="my-4 hidden" />
+                <div className="my-4 hidden">
                   <Button variant="outline" className="w-full mb-2">
                     Doorgaan met Google
                   </Button>

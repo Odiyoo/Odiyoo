@@ -169,15 +169,13 @@ export function convertToDakrenovatieQuoteSchema(formData: FormData, quoteData: 
 
 /* Appointment request */
 const appointmentRequestSchema = z.object({
-    quote_id: z.string().default(''),
-    quote_type: z.string().default(''),
     fullname: z.string().min(2, { message: "Ongeldige naam" }),
     address: z.string().min(4, { message: "Ongeldig adres" }),
     email: z.string().email({ message: "Ongeldig e-mailadres" }),
     telephone: z.string().regex(/^\+?[0-9\s\-]{7,15}$/, {
         message: 'Ongeldig telefoonnummer',
     }),
-    status: z.string().default('dakinspectie_gevraagd')
+    status: z.string().default('offerte_aangemaakt')
 });
 type AppointmentRequestSchema = z.infer<typeof appointmentRequestSchema>;
 
@@ -190,27 +188,35 @@ export type AppointmentRequestStatus = 'dakinspectie_gevraagd' | 'offerte_aangem
 export async function createAppointmentRequest(customerData: AppointmentRequestSchema): Promise<AppointmentRequestResponse> {
     const supabase = await createClient();
 
-    const { quote_id, quote_type, ...customerDataInsert } = customerData;
+    //const { quote_id, quote_type, ...customerDataInsert } = customerData;
     const { error, data } = await supabase.from('appointment_requests').insert(
-        customerDataInsert
+        customerData
     ).select('id').single();
 
     if (!error) {
         const { error: join_error, data: join_data } = await supabase.from('appointment_quotes').insert(
             {
                 appointment_id: data.id,
-                quote_type: quote_type,
-                quote_id: quote_id
+                //quote_type: quote_type,
+                //quote_id: quote_id
             }
         );
     }
 
     return { error, data };
 }
-export async function getAppointmentRequests(): Promise<AppointmentRequestsResponse> {
-    const supabase = await createClient();
 
-    const { error, data } = await supabase.from('appointment_requests').select('*, appointment_quotes (*)');
+/* Quote completion */
+const quoteCompletionSchema = z.object({
+    fullname: z.string().min(2, { message: "Ongeldige naam" }),
+    address: z.string().min(4, { message: "Ongeldig adres" }),
+    email: z.string().email({ message: "Ongeldig e-mailadres" }),
+    telephone: z.string().regex(/^\+?[0-9\s\-]{7,15}$/, {
+        message: 'Ongeldig telefoonnummer',
+    }),
+    status: z.string().default('offerte_aangemaakt'),
+});
+type QuoteCompletionSchema = z.infer<typeof quoteCompletionSchema>;
 
-    return { error, data };
-}
+export { quoteCompletionSchema };
+export type { QuoteCompletionSchema };

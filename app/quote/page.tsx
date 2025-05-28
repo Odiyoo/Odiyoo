@@ -41,7 +41,6 @@ export default function QuotePage() {
         formChoice = <>Er is iets misgelopen...</>
         break;
     }
-    console.log(`formChoice: ${formData.service}`);
     return formChoice;
   }
 

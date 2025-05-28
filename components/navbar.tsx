@@ -23,7 +23,6 @@ import useIsLoggedIn from "@/lib/cookies"
 
 export default function Navbar() {
 
-
   const [isLoggedIn] = useIsLoggedIn()
 
   return (

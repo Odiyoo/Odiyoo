@@ -8,34 +8,30 @@ import { AppointmentRequestResponse, appointmentRequestSchema, AppointmentReques
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
+import { RepresentativeAppointmentResponse, RepresentativeAppointmentSchema, representativeAppointmentSchema } from "@/domain/appointments";
 
-type props = {
-    infoSubmitted: boolean,
-    form: any,
-    onSubmit: any,
-    isNoMeasurementStepButtonLoading: boolean
-}
 
-export default function StepNoMeasurements() {
+export default function StepNoMeasurements({ formData }: { formData: { service: string | null } }) {
 
     const [infoSubmitted, setInfoSubmitted] = useState(false);
     const [isNoMeasurementStepButtonLoading, setNoMeasurementStepButtonLoading] = useState(false);
 
-    const form = useForm<AppointmentRequestSchema>({
-        resolver: zodResolver(appointmentRequestSchema),
+    const form = useForm<RepresentativeAppointmentSchema>({
+        resolver: zodResolver(representativeAppointmentSchema),
         defaultValues: {
             fullname: "",
             address: "",
             email: "",
             telephone: "",
-            status: "dakinspectie_gevraagd"
+            status: "open",
+            datetime_planned: new Date(),
+            service_id: formData.service
         },
     });
 
-    const onSubmit = async (customerData: AppointmentRequestSchema) => {
+    const onSubmit = async (customerData: RepresentativeAppointmentSchema) => {
         setNoMeasurementStepButtonLoading(true);
-        console.log(JSON.stringify(customerData))
-        const appointment_res = await fetch("/api/quote/ask-appointment", {
+        const appointment = await fetch("/api/appointments/representative", {
             method: "POST",
             body: JSON.stringify(customerData),
             headers: {
@@ -43,7 +39,13 @@ export default function StepNoMeasurements() {
             },
         });
 
-        const result: AppointmentRequestResponse = await appointment_res.json();
+        const result: RepresentativeAppointmentResponse = await appointment.json();
+
+        if (result.error || result.errors) {
+            form.setError("fullname", { message: "Er is iets fout gelopen." });
+            setNoMeasurementStepButtonLoading(false);
+            return;
+        }
 
         const res = await fetch("/api/mail/send-lead", {
             method: "POST",
@@ -54,7 +56,7 @@ export default function StepNoMeasurements() {
         });
 
         setNoMeasurementStepButtonLoading(false);
-        if (!appointment_res.ok) {
+        if (!appointment.ok) {
             form.setError("fullname", { message: "Er is iets fout gelopen." });
         } else {
             setInfoSubmitted(true)

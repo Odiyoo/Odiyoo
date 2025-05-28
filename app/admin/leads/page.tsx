@@ -27,7 +27,7 @@ import { capitalize } from "@/lib/helper"
 export default function LeadsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState("all")
-  const [leads, setLeads] = useState<ExtendedAppointmentRequest[]>([])
+  const [leads, setLeads] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   const getStatusColor = (status: AppointmentRequestStatus | null) => {
@@ -43,12 +43,12 @@ export default function LeadsPage() {
     }
   }
 
-  const getStatusText = (status: AppointmentRequestStatus | null) => {
+  const getStatusText = (status: 'open' | 'gesloten' | null) => { //AppointmentRequestStatus
     switch (status) {
-      case 'dakinspectie_gevraagd':
+      case 'open':
         return 'Lauwe lead'
       
-      case 'offerte_aangemaakt':
+      case 'gesloten':
         return 'Warme lead'
     
       default:
@@ -56,13 +56,13 @@ export default function LeadsPage() {
     }
   }
 
-  const getStatus = (status: AppointmentRequestStatus | null) => {
+  const getStatus = (status: 'open' | 'gesloten' | null) => {
     switch (status) {
-      case 'dakinspectie_gevraagd':
+      case 'open':
         return 'Dakinspectie gevraagd'
       
-      case 'offerte_aangemaakt':
-        return 'Offerte aangemaakt'
+      case 'gesloten':
+        return 'Afgehandeld'
     
       default:
         return 'Lauwe lead'
@@ -76,11 +76,12 @@ export default function LeadsPage() {
       lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.telephone.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.address.toLowerCase().includes(searchTerm.toLowerCase())
+      lead.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.service_id.toLowerCase().includes(searchTerm.toLowerCase())
 
     if (activeTab === "all") return matchesSearch
-    if (activeTab === "dakinspectie_gevraagd") return matchesSearch && lead.status === 'dakinspectie_gevraagd'
-    if (activeTab === "offerte_aangemaakt") return matchesSearch && lead.status === 'offerte_aangemaakt'
+    if (activeTab === "open") return matchesSearch && lead.status === 'open'
+    if (activeTab === "gesloten") return matchesSearch && lead.status === 'gesloten'
 
     return matchesSearch
   })
@@ -141,8 +142,8 @@ export default function LeadsPage() {
             <Tabs defaultValue="all" onValueChange={setActiveTab}>
               <TabsList className="mb-4">
                 <TabsTrigger value="all">Alle leads</TabsTrigger>
-                <TabsTrigger value="dakinspectie_gevraagd">Dakinspectie gevraagd</TabsTrigger>
-                <TabsTrigger value="offerte_aangemaakt">Offerte aangemaakt</TabsTrigger>
+                <TabsTrigger value="open">Dakinspectie gevraagd</TabsTrigger>
+                <TabsTrigger value="gesloten">Afgehandeld</TabsTrigger>
               </TabsList>
               <div className="rounded-md border">
                 <Table>
@@ -154,7 +155,6 @@ export default function LeadsPage() {
                       <TableHead>Telefoonnummer</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Service</TableHead>
-                      <TableHead>Laatste event</TableHead>
                       <TableHead className="text-right">Acties</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -186,14 +186,7 @@ export default function LeadsPage() {
                               {getStatusText(lead.status)}
                             </div>
                           </TableCell>
-                          <TableCell><div className="font-medium">{capitalize(lead.appointment_quotes[0].quote_type)}</div></TableCell>
-                          <TableCell>
-                            <div
-                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium`}
-                            >
-                              {getStatus(lead.status)}
-                            </div>
-                          </TableCell>
+                          <TableCell><div className="font-medium">{capitalize(lead.service_id)}</div></TableCell>
                           <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
