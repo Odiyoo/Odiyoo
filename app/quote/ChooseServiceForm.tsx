@@ -1,21 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { calculateExtrasCost } from "@/domain/contractors";
-import { ArrowRight, Check, CheckIcon, Loader, X } from "lucide-react";
-import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
-import { useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
+
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FormData } from "./page"
-import Link from "next/link";
-import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/domain/auth";
-import { AppointmentRequestResponse, AppointmentRequestSchema, appointmentRequestSchema } from "@/domain/services/roofing";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import StepNoMeasurements from "./StepNoMeasurements";
 import StepService from "./StepService";
 import StepMeasurements from "./StepMeasurements";
@@ -64,7 +50,7 @@ export default function ChooseServiceForm({ formData, setFormData, handleStep1Co
                 setSubStepContent(<StepMeasurements isMeasurementKnown={isMeasurementKnown} setIsMeasurementKnown={setIsMeasurementKnown}/>)
                 break;
             case 'NoMeasurementStep':
-                setSubStepContent(<StepNoMeasurements/>)
+                setSubStepContent(<StepNoMeasurements formData={formData}/>)
                 break;
             case 'LoadingStep':
                 setSubStepContent(<LoadingStep/>)

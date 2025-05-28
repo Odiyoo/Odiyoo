@@ -8,31 +8,28 @@ import { calculateExtrasCost } from "@/domain/contractors";
 import { ArrowRight, Check, CheckIcon, Loader, X } from "lucide-react";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
-import { DakgotenChoice, DakraamChoice, FormData, InsulationChoice } from "./Form"
+import { FormData } from "./Form"
+import { DakgotenChoice, DakraamChoice, InsulationChoice } from "@/domain/contractors"
 import Link from "next/link";
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/domain/auth";
-import { FreeRoofInspectionSchema, freeRoofInspectionSchema } from "@/domain/services/roofing";
+//import { FreeRoofInspectionSchema, freeRoofInspectionSchema } from "@/domain/services/roofing";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 type SidebarProps = {
     formData: FormData,
     setFormData: any,
     handleStep1Complete: any,
+    hasGmapsLoaded: boolean,
 };
 
 
-export default function StepOne({ formData, setFormData, handleStep1Complete }: SidebarProps) {
+export default function StepOne({ formData, setFormData, handleStep1Complete, hasGmapsLoaded }: SidebarProps) {
 
     const addressInputRef = useRef(null)
     const addressRef = useRef<any>(null)
-    const { isLoaded: hasGmapsLoaded } = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: "AIzaSyARTWcUUS8RHo9FZOCA4bnF8VxXUU0wcRk", //process.env.NEXT_PUBLIC_GMAPS_API_KEY!,
-        libraries: ['places']
-    })
 
     const handleSelectChange = (name: any, value: any) => {
         setFormData((prev: FormData) => ({ ...prev, [name]: value }))
@@ -98,7 +95,8 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
     }
 
     const handleOnPlacesChanged = () => {
-        let address = addressRef.current.getPlaces();
+        let address = addressRef.current.getPlaces()[0].formatted_address;
+        setFormData((prev: any) => ({ ...prev, address }))
     }
 
 
@@ -277,7 +275,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                 {/* Keuze Isolatie */}
                 <div className="space-y-4">
                     <h4 className="font-medium text-odiyoo">Isolatie</h4>
-                    <div className="grid grid-rows-1 md:grid-rows-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.insulation === 'geen' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectInsulation("geen")}
@@ -328,7 +326,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                 {/* Keuze Dakgoten */}
                 <div className="space-y-4">
                     <h4 className="font-medium text-odiyoo">Dakgoten</h4>
-                    <div className="grid grid-rows-1 md:grid-rows-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'niet vervangen' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectDakgoten("niet vervangen")}
@@ -344,31 +342,44 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'zinken goot' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectDakgoten("zinken goot")}
                         >
-                            <div>
+                            <div className="mb-4">
                                 <h3 className="font-medium">Zinken goot</h3>
                                 <p className="text-sm text-muted-foreground">
                                 </p>
                             </div>
+                            <img src="https://nubuiten.imgix.net/2020/07/dak_dakgoten_zinkendakgoot.jpg?auto=format%2Ccompress&ixlib=php-3.3.0"
+                                alt="Zinken dakgoot afbeelding"
+                                className="w-full h-28 object-cover rounded-md" />
+
                         </div>
                         <div
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'bekleden' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectDakgoten("bekleden")}
                         >
-                            <div>
+                            <div className="mb-4">
                                 <h3 className="font-medium">Bekleden (uittimmeren)</h3>
                                 <p className="text-sm text-muted-foreground">
                                 </p>
                             </div>
+                            <img src="https://cdn.zilvercms.nl/http://hepro.zilvercdn.nl/uploads/webshop/173573_Reference_Roofline_Bissegem_BE_Low-0.JPG"
+                                alt="Goot bekleding afbeelding"
+                                className="w-full h-28 object-cover rounded-md" />
+
                         </div>
                         <div
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakgoten === 'hanggoot' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectDakgoten("hanggoot")}
                         >
-                            <div>
+                            <div className="mb-4">
                                 <h3 className="font-medium">Hanggoot</h3>
                                 <p className="text-sm text-muted-foreground">
                                 </p>
                             </div>
+                            <img src="https://www.bobex.be/wp-uploads/sites/5/hanggoot-aluminium-rood-oranje-pvc-1024x538.jpg"
+                                alt="Hanggoot afbeelding"
+                                className="w-full h-28 object-cover rounded-md"
+                            />
+
                         </div>
                     </div>
                 </div>
@@ -376,7 +387,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                 {/* Keuze Dakraam */}
                 <div className="space-y-4">
                     <h4 className="font-medium text-odiyoo">Dakraam</h4>
-                    <div className="grid grid-rows-1 md:grid-rows-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakraam === 'geen' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectDakraam("geen")}
@@ -392,35 +403,33 @@ export default function StepOne({ formData, setFormData, handleStep1Complete }: 
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakraam === 'tuimelvenster' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectDakraam("tuimelvenster")}
                         >
-                            <div className="flex gap-4">
-                                <img
-                                    src={"https://dakramen.veluxshop.nl/-/media/roofwindowshop/productimages/inside/windows/ggu.png"}
-                                    alt="Tuimelvenster"
-                                    className="w-24 h-24 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h3 className="font-medium">Tuimelvenster</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                    </p>
-                                </div>
+                            <div className="mb-4">
+                                <h3 className="font-medium">Tuimelvenster</h3>
+                                <p className="text-sm text-muted-foreground">
+                                </p>
                             </div>
+                            <img
+                                src={"https://dakramen.veluxshop.nl/-/media/roofwindowshop/productimages/inside/windows/ggu.png"}
+                                alt="Tuimelvenster"
+                                className="w-24 h-24 object-cover rounded-md"
+                            />
+
                         </div>
                         <div
                             className={`p-4 border rounded-lg cursor-pointer transition-colors ${formData.dakraam === 'uitzettuimelvenster' ? "border-odiyoo border-2 bg-primary/5" : "hover:border-primary/50"}`}
                             onClick={() => selectDakraam("uitzettuimelvenster")}
                         >
-                            <div className="flex gap-4">
-                                <img
-                                    src={"https://dakramen.veluxshop.nl/-/media/roofwindowshop/productimages/inside/windows/gpl.png"}
-                                    alt="Uitzet tuimelvenster"
-                                    className="w-24 h-24 object-cover rounded-md"
-                                />
-                                <div>
-                                    <h3 className="font-medium">Uitzet tuimelvenster</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                    </p>
-                                </div>
+                            <div className="mb-4">
+                                <h3 className="font-medium">Uitzet tuimelvenster</h3>
+                                <p className="text-sm text-muted-foreground">
+                                </p>
                             </div>
+                            <img
+                                src={"https://dakramen.veluxshop.nl/-/media/roofwindowshop/productimages/inside/windows/gpl.png"}
+                                alt="Uitzet tuimelvenster"
+                                className="w-24 h-24 object-cover rounded-md"
+                            />
+
                         </div>
                     </div>
                 </div>
