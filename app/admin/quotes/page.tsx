@@ -89,8 +89,8 @@ export default function ContractorsPage() {
       quote.quote_number.toLowerCase().includes(searchTerm.toLowerCase())
 
     if (activeTab === "all") return matchesSearch
-    if (activeTab === "dakreiniging") return matchesSearch && quote.quote_type
-    if (activeTab === "dakrenovatie") return matchesSearch && !quote.quote_type
+    if (activeTab === "dakreiniging") return matchesSearch && quote.quote_type === "dakreiniging"
+    if (activeTab === "dakrenovatie") return matchesSearch && quote.quote_type === "dakrenovatie"
 
     return matchesSearch
   })

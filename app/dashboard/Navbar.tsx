@@ -1,10 +1,11 @@
 import {
+    ArrowRight,
   CircleUserRound,
   Home,
 } from "lucide-react"
 import Link from "next/link"
-import { Button } from "./ui/button"
-import FullLogo from "./full-logo"
+import { Button } from "@/components/ui/button"
+import FullLogo from "@/components/full-logo"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,22 +24,16 @@ import useIsLoggedIn from "@/lib/cookies"
 
 export default function Navbar() {
 
+
   const [isLoggedIn] = useIsLoggedIn()
 
   return (
     <header className="bg-white py-4 shadow-sm">
       <div className="container flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <FullLogo />
-        </Link>
+        <div></div>
         <div className="flex items-center gap-4">
-          {isLoggedIn && (
-            <Link href="/dashboard" className="">
-              <Button variant="outline">Mijn offertes</Button>
-            </Link>
-          )}
           <Link href="/quote" className="hidden md:block">
-            <Button className="bg-odiyoo">Ontvang je offerte in 15 seconden</Button>
+            <Button className="bg-odiyoo">Ontvang je offerte in 15 seconden <ArrowRight/></Button>
           </Link>
           {!isLoggedIn && <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -73,16 +68,10 @@ export default function Navbar() {
               <DropdownMenuLabel>Mijn Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <Link href="/dashboard/account">
-                  <DropdownMenuItem>
-                    Account
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/dashboard">
-                  <DropdownMenuItem>
-                    Jouw offertes
-                  </DropdownMenuItem>
-                </Link>
+                <DropdownMenuItem>
+                  Account
+                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem disabled>Jouw vakmanschap op Odiyoo</DropdownMenuItem>

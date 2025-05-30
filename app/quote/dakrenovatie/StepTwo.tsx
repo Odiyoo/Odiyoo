@@ -388,11 +388,11 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                                                         <span>€{displayPrice(quote.afbraakCost)}</span>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <span>Timmerwerken ({displayPrice(contractor.timmerwerken_per_sq_meter)}/m²):</span>
+                                                        <span>Timmerwerken (€{displayPrice(contractor.timmerwerken_per_sq_meter)}/m²):</span>
                                                         <span>€{displayPrice(quote.timmerCost)}</span>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <span>Dakbedekking ({displayPrice(contractor.dakbedekking_per_sq_meter)}/m²):</span>
+                                                        <span>Dakbedekking (€{displayPrice(contractor.dakbedekking_per_sq_meter)}/m²):</span>
                                                         <span>€{displayPrice(quote.materialCost)}</span>
                                                     </div>
                                                     {formData.insulation !== 'geen' && <div className="flex justify-between">

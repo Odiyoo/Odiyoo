@@ -96,7 +96,7 @@ export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contra
   const laborCost = roofSize * (contractor.afbraakwerken_per_sq_meter + contractor.timmerwerken_per_sq_meter);
   const afbraakCost = roofSize * contractor.afbraakwerken_per_sq_meter;
   const timmerCost = roofSize * contractor.timmerwerken_per_sq_meter;
-  const extrasCost = calculateExtrasCost(roofSize, contractor, hasInsulation, hasGutters, hasSolarPanels, hasSkylights, hasFacadeCladding);
+  const extrasCost = calculateExtrasCost(hasSolarPanels, hasFacadeCladding);
   
   let insulationCost = 0;
   if (choiceInsulation === '10cm') insulationCost = roofSize * 51;
@@ -108,7 +108,7 @@ export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contra
   if (choiceDakgoten === 'hanggoot') dakGotenCost = 70;
   let dakRaamCost = 400;
   
-  const totalPrice = materialCost + afbraakCost + timmerCost + insulationCost + dakGotenCost + dakRaamCost; // TODO: add extrasCost
+  const totalPrice = materialCost + laborCost +  afbraakCost + timmerCost + insulationCost + dakGotenCost + dakRaamCost + extrasCost;
 
   // Determine duration
   let estimatedDuration = ""
@@ -121,7 +121,7 @@ export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contra
   }
 
 
-  console.log({
+  /*console.log({
     materialCost,
     afbraakCost,
     timmerCost,
@@ -132,7 +132,7 @@ export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contra
     laborCost,
     totalPrice,
     estimatedDuration,
-  })
+  })*/
   return {
     materialCost,
     afbraakCost,
@@ -152,7 +152,7 @@ export const calculateDakreinigingQuoteForContractor = (roofSize: number, contra
   let costBasedOnSurface = 0
 
   if (roofSize > DAKREINIGINGS_START_METERS) {
-    costBasedOnSurface = roofSize * contractor.dakreiniging_prijs_per_sq_meter;
+    costBasedOnSurface = (roofSize - DAKREINIGINGS_START_METERS) * contractor.dakreiniging_prijs_per_sq_meter;
   }
 
   const totalPrice = contractor.dakreiniging_start_price + costBasedOnSurface
@@ -175,13 +175,9 @@ export const calculateDakreinigingQuoteForContractor = (roofSize: number, contra
 }
 
 // Function to calculate extras cost
-export const calculateExtrasCost = (roofSize: number, hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean, contractor?: ExtendedContractor) => {
+export const calculateExtrasCost = (hasSolarPanels: boolean, hasFacadeCladding: boolean) => {
   let cost = 0
-  if (contractor && hasInsulation) cost += (calculateInsulationCost(roofSize, contractor))
-  if (!contractor && hasInsulation) cost += 4500
-  if (hasGutters) cost += 1200
   if (hasSolarPanels) cost += 5000
-  if (hasSkylights) cost += 1800
   if (hasFacadeCladding) cost += 3200
   return cost
 }

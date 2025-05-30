@@ -18,12 +18,13 @@ import { Confetti } from "@/components/confetti"
 import Sidebar from "./Sidebar"
 import StepOne from "./StepOne"
 import StepTwo from "./StepTwo"
-import { calculateInsulationCost, calculateDakrenovatieQuoteForContractor, ContractorDakrenovatieQuote, ExtendedContractor, InsulationChoice, DakgotenChoice, DakraamChoice } from "@/domain/contractors"
+import { calculateDakrenovatieQuoteForContractor, ContractorDakrenovatieQuote, ExtendedContractor, InsulationChoice, DakgotenChoice, DakraamChoice } from "@/domain/contractors"
 import { displayPrice, taxPercentage, taxPercentageDisplay } from "@/domain/finance"
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
-import { appointmentRequestSchema, AppointmentRequestSchema, convertToDakrenovatieQuoteSchema, QuoteDakReinigingAddSchema } from "@/domain/services/roofing"
+import { appointmentRequestSchema, AppointmentRequestSchema, convertToDakrenovatieQuoteSchema, quoteCompletionSchema, QuoteCompletionSchema, QuoteDakReinigingAddSchema } from "@/domain/services/roofing"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation"
 
 export type FormData = {
     address: string,
@@ -44,7 +45,7 @@ export type FormData = {
     dakraam: DakraamChoice,
 }
 
-export default function DakrenovatieForm() {
+export default function DakrenovatieForm({ hasGmapsLoaded }: { hasGmapsLoaded: boolean }) {
 
     const [step, setStep] = useState(1)
     const [formData, setFormData] = useState<FormData>({
@@ -89,16 +90,18 @@ export default function DakrenovatieForm() {
     const [lightboxIndex, setLightboxIndex] = useState(0)
     const [isSubmissionLoading, setIsSubmissionLoading] = useState(false)
 
-    const form = useForm<AppointmentRequestSchema>({
-        resolver: zodResolver(appointmentRequestSchema),
+    const form = useForm<QuoteCompletionSchema>({
+        resolver: zodResolver(quoteCompletionSchema),
         defaultValues: {
             fullname: "",
-            address: "",
+            address: formData.address,
             email: "",
             telephone: "",
             status: "offerte_aangemaakt",
         },
     });
+
+    const router = useRouter()
 
     // Function to check if a step is accessible
     const canAccessStep = (stepNumber: number) => {
@@ -268,56 +271,47 @@ export default function DakrenovatieForm() {
       },
     ]*/
 
-    const onSubmit = async (data: AppointmentRequestSchema) => {
-        setIsSubmissionLoading(true);
-        const quote_res = await fetch("/api/quote/dakrenovatie", {
-            method: "POST",
-            body: JSON.stringify(convertToDakrenovatieQuoteSchema(formData, quoteData)),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        const quote_result: any = await quote_res.json();
-        const quote_id: string = quote_result.data.id;
-
-        if (!quote_res.ok) {
-            form.setError("fullname", { message: "Er is iets fout gelopen." });
-        }
-        data.quote_id = quote_id
-        data.quote_type = 'dakrenovatie'
-        const appointment_res = await fetch("/api/quote/ask-appointment", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        const result: { data: { appointment_id: string } } = await appointment_res.json();
-
-        if (!appointment_res.ok) {
-            form.setError("fullname", { message: "Er is iets fout gelopen." });
-        } else {
-            setIsSubmissionLoading(false)
-            setInfoSubmitted(true)
-        }
-
-        await fetch(
-            '/api/mail/send-dakrenovatie-quote',
-            {
+    const onSubmit = async (data: QuoteCompletionSchema) => {
+        try {
+            setIsSubmissionLoading(true);
+            const quote_res = await fetch("/api/quote/dakrenovatie", {
                 method: "POST",
+                body: JSON.stringify(convertToDakrenovatieQuoteSchema(formData, quoteData)),
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    formData,
-                    quoteData,
-                    customerData: data,
-                    appointment_id: result.data.appointment_id
-                })
+            });
+
+            if (!quote_res.ok) {
+                form.setError("fullname", { message: "Er is iets fout gelopen." });
+                setIsSubmissionLoading(false)
+                return;
+            } else {
+                setIsSubmissionLoading(false)
+                setInfoSubmitted(true)
             }
-        ).then((response) => { console.log(response) })
+
+            const quote = await quote_res.json()
+            const quote_id = quote.data.id
+
+            await fetch(
+                '/api/mail/send-dakrenovatie-quote',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        formData,
+                        quoteData,
+                        customerData: data,
+                        quote_id
+                    })
+                }
+            )
+        } catch (e) {
+            console.error(e)
+        }
     };
 
     // Calculate quotes for all contractors when moving to step 2
@@ -376,12 +370,23 @@ export default function DakrenovatieForm() {
         })
     }
 
+    const handleReload = (e: React.MouseEvent) => {
+        if (router.pathname === '/quote') {
+            e.preventDefault();
+            router.replace(router.asPath); // reload current page
+        }
+    };
+
     useEffect(() => {
         if (step === 2) {
             setQuoteGenerated(true);
             nextStep();
         }
     }, [quoteData])
+
+    useEffect(() => {
+        form.setValue("address", formData.address)
+    }, [formData.address])
 
     return (
         <div className="flex flex-col lg:flex-row gap-8">
@@ -443,7 +448,7 @@ export default function DakrenovatieForm() {
                 <Card className="w-full">
                     {step === 1 && (
                         <Suspense>
-                            <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData} />
+                            <StepOne handleStep1Complete={handleStep1Complete} formData={formData} setFormData={setFormData} hasGmapsLoaded={hasGmapsLoaded} />
                         </Suspense>
                     )}
 
@@ -472,20 +477,20 @@ export default function DakrenovatieForm() {
                                             <span className="font-medium">€{displayPrice(formData.roofSize * 12)}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Afbraakwerken (€{displayPrice(formData.selectedContractor.afbraakwerken_per_sq_meter)}/m²):</span>
+                                            <span>Afbraakwerken (€{displayPrice(formData.selectedContractor!.afbraakwerken_per_sq_meter)}/m²):</span>
                                             <span className="font-medium">€{displayPrice(quoteData.afbraakCost).toLocaleString()}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Timmerwerken (€{displayPrice(formData.selectedContractor.timmerwerken_per_sq_meter)}/m²):</span>
+                                            <span>Timmerwerken (€{displayPrice(formData.selectedContractor!.timmerwerken_per_sq_meter)}/m²):</span>
                                             <span className="font-medium">€{displayPrice(quoteData.timmerCost).toLocaleString()}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Dakbedekking (€{displayPrice(formData.selectedContractor.dakbedekking_per_sq_meter)}/m²):</span>
+                                            <span>Dakbedekking (€{displayPrice(formData.selectedContractor!.dakbedekking_per_sq_meter)}/m²):</span>
                                             <span className="font-medium">€{displayPrice(quoteData.materialCost).toLocaleString()}</span>
                                         </div>
                                         {formData.insulation !== 'geen' && <div className="flex justify-between">
                                             <span>Isolatie - {formData.insulation}:</span>
-                                            <span>€{displayPrice(quoteData.insulationCost)}/m²</span>
+                                            <span>€{displayPrice(quoteData.insulationCost)}</span>
                                         </div>}
                                         {formData.dakgoten !== 'niet vervangen' && <div className="flex justify-between">
                                             <span>Dakgoten - {formData.dakgoten}:</span>
@@ -577,10 +582,10 @@ export default function DakrenovatieForm() {
                                             <p className="text-center font-medium">Wat wil je nu doen?</p>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <Link href="/faq" className="text-sm text-muted-foreground">
+                                                <Link href="/faq" className="block">
                                                     <div className="border border-dashed border-primary/50 rounded-lg p-4 text-center cursor-pointer hover:bg-primary/5 transition-colors">
                                                         <h4 className="font-medium mb-2">Hoe te besparen op je dakwerken</h4>
-                                                        Ontdek tips en trucs om kosten te besparen bij je dakproject
+                                                        <p className="text-sm text-muted-foreground">Ontdek tips en trucs om kosten te besparen bij je dakproject</p>
                                                     </div>
                                                 </Link>
 
@@ -606,21 +611,6 @@ export default function DakrenovatieForm() {
                                                                 <FormLabel htmlFor="fullname">Volledige Naam</FormLabel>
                                                                 <FormControl>
                                                                     <Input id="fullname" type="text" placeholder="Peter Peeters" className="mt-2" {...field} required />
-                                                                </FormControl>
-                                                                <FormMessage />
-                                                            </>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div className="my-4">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="address"
-                                                        render={({ field }) => (
-                                                            <>
-                                                                <FormLabel htmlFor="address">Adres</FormLabel>
-                                                                <FormControl>
-                                                                    <Input id="address" type="text" placeholder="Stationstraat 1, Tongeren" className="mt-2" {...field} required />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                             </>
@@ -666,7 +656,7 @@ export default function DakrenovatieForm() {
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col space-y-4">
-                                <Link href="/quote">
+                                <Link href="/quote" onClick={handleReload}>
                                     <Button variant="link">
                                         Opnieuw beginnen
                                     </Button>

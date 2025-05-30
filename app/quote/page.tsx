@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useEffect, useRef, Suspense } from "react"
+import { useState, Suspense } from "react"
 import Navbar from "@/components/navbar"
 import DakrenovatieForm from "./dakrenovatie/Form"
 import DakreinigingForm from "./dakreiniging/Form"
 import ChooseServiceForm from "./ChooseServiceForm"
-import { ExtendedContractor } from "@/domain/contractors"
 import Sidebar from "@/components/sidebar"
+import { Libraries, useJsApiLoader } from "@react-google-maps/api";
+
+export const mapsLibraries: Libraries = ['places'];
 
 export type FormChoice = 'dakreiniging' | 'dakrenovatie';
 
@@ -19,21 +21,26 @@ export default function QuotePage() {
   const [formData, setFormData] = useState<FormData>({
     service: null,
   })
+
+  const { isLoaded: hasGmapsLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: "AIzaSyARTWcUUS8RHo9FZOCA4bnF8VxXUU0wcRk", //process.env.NEXT_PUBLIC_GMAPS_API_KEY!,
+    libraries: mapsLibraries
+  })
   
   const quoteForm = () => {
     let formChoice;
     switch (formData.service) {
       case 'dakreiniging':
-        formChoice = <DakreinigingForm />
+        formChoice = <DakreinigingForm hasGmapsLoaded={hasGmapsLoaded}/>
         break;
       case 'dakrenovatie':
-        formChoice = <DakrenovatieForm />
+        formChoice = <DakrenovatieForm hasGmapsLoaded={hasGmapsLoaded}/>
         break;
       default:
         formChoice = <>Er is iets misgelopen...</>
         break;
     }
-    console.log(`formChoice: ${formData.service}`);
     return formChoice;
   }
 

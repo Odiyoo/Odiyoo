@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import moment from 'moment'
 import 'moment/locale/nl'
+import { Analytics } from "@vercel/analytics/next"
 
 moment.locale('nl')
 

@@ -1,10 +1,11 @@
-import { getRepresentativeAppointments } from "@/domain/appointments";
+import { getCustomers } from "@/domain/customers";
 import { NextRequest, NextResponse } from 'next/server';
+
 
 export async function GET(req: NextRequest) {
   if (req.method !== "GET") return new NextResponse(null, {status: 405});
 
-  const response = await getRepresentativeAppointments();
+  const response = await getCustomers();
 
   if (response.error) {
     console.log(response.error);
@@ -13,4 +14,3 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ data: response.data }, { status: 200 })
 }
-
