@@ -23,6 +23,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { ContractorDakrenovatieQuote, ExtendedContractor } from "@/domain/contractors"
 import { FormData } from "./Form"
 import { displayPrice } from "@/domain/finance"
+import StartOverLink from "../StartOverLink"
 
 type StepTwoProps = {
     handleStep2Complete: () => void,
@@ -223,9 +224,9 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
             <CardHeader>
                 <div className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="text-odiyoo">Selecteer een aannemer</CardTitle>
+                        <CardTitle className="text-odiyoo">Selecteer een offerte</CardTitle>
                         <CardDescription>
-                            Kies uit onze gecontroleerde dakdekkers. Elk biedt verschillende prijzen en expertise.
+                            Kies de offerte die het beste bij jou past.
                         </CardDescription>
                     </div>
                     <div className="flex items-center">
@@ -470,15 +471,18 @@ export default function StepTwo({ handleStep2Complete, contractors, step, formDa
                     })}
                 </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={prevStep}>
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Terug
-                </Button>
-                <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor}>
-                    Genereer offerte
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+            <CardFooter className="flex-col">
+                <div className="flex justify-between w-full mb-4">
+                    <Button variant="outline" onClick={prevStep}>
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Terug
+                    </Button>
+                    <Button onClick={handleStep2Complete} disabled={!formData.selectedContractor}>
+                        Genereer offerte
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
+                <StartOverLink />
             </CardFooter>
         </>
     );

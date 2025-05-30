@@ -7,6 +7,9 @@ import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { StandaloneSearchBox } from '@react-google-maps/api';
 import { FormData } from "./Form";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import StartOverLink from "../StartOverLink";
 
 type StepOneProps = {
     formData: FormData,
@@ -19,6 +22,7 @@ export default function StepOne({ formData, setFormData, handleStep1Complete, ha
 
     const addressInputRef = useRef(null)
     const addressRef = useRef<any>(null)
+    const router = useRouter()
 
     const toggleDakreinigingOptions = (name: string) => {
         setFormData((prev: FormData) => ({
@@ -50,6 +54,18 @@ export default function StepOne({ formData, setFormData, handleStep1Complete, ha
         let address = addressRef.current.getPlaces()[0].formatted_address;
         setFormData((prev: any) => ({ ...prev, address }))
     }
+
+    const canGoToNextStep = (
+        formData.address &&
+        formData.roofSize &&
+        (formData.options.dakbedekking ||
+            formData.options.gootsystemen ||
+            formData.options.zonnepanelen ||
+            formData.options.veluxramen ||
+            formData.options.schoorsteen ||
+            formData.options.aquaplan ||
+            formData.options.optionUnknown)
+    )
 
     return (
         <>
@@ -263,11 +279,15 @@ export default function StepOne({ formData, setFormData, handleStep1Complete, ha
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="flex justify-end">
-                <Button onClick={handleStep1Complete} disabled={!formData.address}>
-                    Volgende
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+            <CardFooter className="flex-col">
+                <div className="flex flex-col place-self-end mb-4">
+                    <Button onClick={handleStep1Complete} disabled={!canGoToNextStep} className="place-self-end">
+                        Volgende
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    {!canGoToNextStep && <p className="text-muted-foreground">Vul uw adres in en kies minstens één optie om verder te gaan.</p>}
+                </div>
+                <StartOverLink/>
             </CardFooter>
         </>
     );

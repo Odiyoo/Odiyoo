@@ -1,4 +1,4 @@
-import { BTW, BUSINESS_NAME, CUSTOMER_SUPPORT_MAIL, CUSTOMER_SUPPORT_PHONE } from "@/domain/business";
+import { BTW, BUSINESS_NAME, CUSTOMER_SUPPORT_MAIL, CUSTOMER_SUPPORT_PHONE, FACEBOOK_LINK, INSTAGRAM_LINK } from "@/domain/business";
 import Link from "next/link";
 import { Mail, MailOpen, PhoneCall, BriefcaseBusiness, Instagram, Facebook } from "lucide-react"
 import FullLogoWhite from "./full-logo-white";
@@ -17,17 +17,17 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/" className="hover:text-white">
+                                <Link href="/quote?service=dakrenovatie&measurements=false" className="hover:text-white">
                                     Gratis dakinspectie aanvragen
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/klantenservice" className="hover:text-white">
+                                <Link href="/klantendienst" className="hover:text-white">
                                     Probleem melden
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/klantenservice" className="hover:text-white">
+                                <Link href="/klantendienst" className="hover:text-white">
                                     Klantendienst contacteren
                                 </Link>
                             </li>
@@ -59,26 +59,21 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div>
-                        <h3 className="mb-4 text-lg font-bold text-white">Voor aannemers</h3>
+                        <h3 className="mb-4 text-lg font-bold text-white">Voor partners</h3>
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/" className="hover:text-white">
-                                    Sluit je aan als aannemer
+                                <Link href="/partners" className="hover:text-white">
+                                    Sluit je aan als partner
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/" className="hover:text-white">
+                                <Link href="/partners#verwachtingen" className="hover:text-white">
                                     Wat verwachten wij?
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/" className="hover:text-white">
+                                <Link href="/partners#voordelen" className="hover:text-white">
                                     Voordelen voor aannemers
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/" className="hover:text-white">
-                                    Partnerlogin
                                 </Link>
                             </li>
                         </ul>
@@ -88,7 +83,6 @@ export default function Footer() {
                     <h3 className="my-4 text-lg font-bold text-white">We komen graag met je in contact</h3>
                     <ul className="space-y-2">
                         <li className="font-medium">{BUSINESS_NAME}</li>
-                        <li className="flex flex-row gap-2"><BriefcaseBusiness /> {BTW}</li>
                         <li className="flex flex-row gap-2"><MailOpen /> <a href={`mailto:${CUSTOMER_SUPPORT_MAIL}`}>{CUSTOMER_SUPPORT_MAIL}</a></li>
                         <li className="flex flex-row gap-2"><PhoneCall /> <a href={`tel:${CUSTOMER_SUPPORT_PHONE}`}>{CUSTOMER_SUPPORT_PHONE}</a></li>
                     </ul>
@@ -100,10 +94,10 @@ export default function Footer() {
                         </li>
                     </ul>
                     <div className="flex flex-row gap-4 mt-8">
-                        <Link href="https://instagram.com/" target="_blank" className="hover:text-white">
+                        <Link href={INSTAGRAM_LINK} target="_blank" className="hover:text-white">
                             <Instagram />
                         </Link>
-                        <Link href="https://www.facebook.com/p/Odiyoocom-61559361823129/" target="_blank" className="hover:text-white">
+                        <Link href={FACEBOOK_LINK} target="_blank" className="hover:text-white">
                             <Facebook />
                         </Link>
                     </div>

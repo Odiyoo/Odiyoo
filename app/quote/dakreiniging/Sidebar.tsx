@@ -154,7 +154,12 @@ export default function SidebarComponent({ step, formData, contractors, contract
                                     </li>
                                     <li>
                                         <Link href="/faq#aannemers-1" className="text-odiyoo hover:underline">
-                                            Hoe kies ik de juiste aannemer?
+                                            Hoe kies ik de juiste offerte?
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/faq#materialen-1" className="text-odiyoo hover:underline">
+                                            Welke dakreiniging is het beste voor mij?
                                         </Link>
                                     </li>
                                 </ul>
@@ -181,6 +186,16 @@ export default function SidebarComponent({ step, formData, contractors, contract
                                         <span>Ma-Vr: 07.30 - 17.00</span>
                                     </div>
                                 </div>
+                            </div>
+
+                            <Separator />
+
+                            <div className="bg-primary/5 p-3 rounded-md">
+                                <h3 className="text-odiyoo font-medium mb-2">Tip</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Weet je niet zeker welk dakmateriaal of reinigingsmethode te kiezen? Vergelijk de verschillende opties en hun voor-
+                                    en nadelen in stap 1.
+                                </p>
                             </div>
                         </div>
                     </CardContent>

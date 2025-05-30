@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { ChevronDown, Home, Search } from "lucide-react"
 
@@ -5,40 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
+import Footer from "@/components/footer"
+import Navbar from "@/components/navbar"
 
 export default function FAQPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="bg-white py-4 shadow-sm">
-        <div className="container flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">Odiyoo</span>
-          </Link>
-          <nav className="hidden space-x-6 md:flex">
-            <Link href="/#features" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Functies
-            </Link>
-            <Link href="/#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Hoe het werkt
-            </Link>
-            <Link href="/#testimonials" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Getuigenissen
-            </Link>
-            <Link href="/faq" className="text-sm font-medium text-foreground">
-              FAQ
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link href="/quote" className="hidden md:block">
-              <Button>Directe Offerte</Button>
-            </Link>
-            <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Inloggen
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar/>
 
       <main className="flex-1">
         {/* Hero Section */}
@@ -566,85 +541,7 @@ export default function FAQPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 py-12 text-gray-300">
-        <div className="container">
-          <div className="grid gap-8 md:grid-cols-3">
-            <div>
-              <h3 className="mb-4 text-lg font-bold text-white">We komen graag met je in contact</h3>
-              <ul className="space-y-2">
-                <li className="font-medium">Odiyoo N.V.</li>
-                <li>BTW: BE 0123 456 789</li>
-                <li>Email: info@odiyoo.nl</li>
-                <li>Telefoon: (020) 123-4567</li>
-                <li className="mt-4">
-                  <span className="font-medium block">Openingstijden:</span>
-                  <span className="block">Maandag - Vrijdag: 07.30 - 17.00</span>
-                  <span className="block">Zaterdag: 08.00 - 12.30</span>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="mb-4 text-lg font-bold text-white">Over ons</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/over-ons" className="hover:text-white">
-                    Ons team
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/advies" className="hover:text-white">
-                    Advies
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white">
-                    Algemene voorwaarden
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="hover:text-white">
-                    Privacybeleid
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="mb-4 text-lg font-bold text-white">Klantenservice</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/over-ons" className="hover:text-white">
-                    Over ons
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/advies" className="hover:text-white">
-                    Advies
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/klantenservice" className="hover:text-white">
-                    Klantenservice
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/kennisbank" className="hover:text-white">
-                    Kennisbank
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/vakantie-openingstijden" className="hover:text-white">
-                    Vakantie openingstijden
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 border-t border-gray-800 pt-8 text-center">
-            <p>&copy; {new Date().getFullYear()} Odiyoo. Alle rechten voorbehouden.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer/>
     </div>
   )
 }

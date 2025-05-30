@@ -7,6 +7,9 @@ import { NewQuoteMail } from './emails/NewQuote'
 import { AppointmentRequestSchema } from './services/roofing'
 import { NewLeadMail } from './emails/NewLead'
 import { NewDakreinigingQuoteMail } from './emails/NewDakreinigingQuote'
+import { CustomerServiceInquiryMail } from './emails/CustomerServiceInquiryMail'
+import { InquiryConfirmationMail } from './emails/InquiryConfirmationMail'
+import { CUSTOMER_SUPPORT_MAIL } from './business'
 
 const resend = new Resend('re_J2gkf18n_ECx7BQwobmH2qWg72gZ2Li8Z')
 const FROM_MAIL = "info@omegauna.be"
@@ -54,5 +57,28 @@ export const sendConfirmationMailToLead = async (customerData: AppointmentReques
         to: [customerData.email],
         subject: 'We hebben je aanvraag ontvangen!',
         react: NewLeadMail({ customerData, afspraakToken: appointment_id }),
+    })
+}
+
+export type CustomerServiceInquiry = {
+    name: string,
+    email: string,
+    topic: string,
+    message: string,
+}
+
+export const sendCustomerServiceInquiry = async (inquiry: CustomerServiceInquiry) => {
+    await sendMail({
+        to: [CUSTOMER_SUPPORT_MAIL],
+        subject: 'Klantendienst bericht ontvangen',
+        react: CustomerServiceInquiryMail({ inquiry }),
+    })
+}
+
+export const sendInquiryConfirmation = async (inquiry: CustomerServiceInquiry) => {
+    await sendMail({
+        to: [inquiry.email],
+        subject: 'We hebben je bericht ontvangen!',
+        react: InquiryConfirmationMail({ inquiry }),
     })
 }
