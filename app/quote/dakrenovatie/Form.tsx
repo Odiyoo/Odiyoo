@@ -24,7 +24,7 @@ import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/componen
 import { appointmentRequestSchema, AppointmentRequestSchema, convertToDakrenovatieQuoteSchema, quoteCompletionSchema, QuoteCompletionSchema, QuoteDakReinigingAddSchema } from "@/domain/services/roofing"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useRouter } from "next/navigation"
+import StartOverLink from "../StartOverLink"
 
 export type FormData = {
     address: string,
@@ -43,6 +43,7 @@ export type FormData = {
     insulation: InsulationChoice,
     dakgoten: DakgotenChoice,
     dakraam: DakraamChoice,
+    lopendeMeterDakgoot: number,
 }
 
 export default function DakrenovatieForm({ hasGmapsLoaded }: { hasGmapsLoaded: boolean }) {
@@ -65,6 +66,7 @@ export default function DakrenovatieForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
         insulation: 'geen',
         dakgoten: 'niet vervangen',
         dakraam: 'geen',
+        lopendeMeterDakgoot: 0,
     })
     const [quoteGenerated, setQuoteGenerated] = useState(false)
     const [quoteData, setQuoteData] = useState<ContractorDakrenovatieQuote>({
@@ -100,8 +102,6 @@ export default function DakrenovatieForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
             status: "offerte_aangemaakt",
         },
     });
-
-    const router = useRouter()
 
     // Function to check if a step is accessible
     const canAccessStep = (stepNumber: number) => {
@@ -335,7 +335,7 @@ export default function DakrenovatieForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
         const quotes: Record<string, ContractorDakrenovatieQuote> = {};
 
         contractorData.forEach((contractor: ExtendedContractor) => {
-            quotes[contractor.id] = calculateDakrenovatieQuoteForContractor(formData.roofSize, contractor, formData.insulation, formData.dakraam, formData.dakgoten, formData.roofType, formData.extras.insulation, formData.extras.gutters, formData.extras.solarPanels, formData.extras.skylights, formData.extras.facadeCladding)
+            quotes[contractor.id] = calculateDakrenovatieQuoteForContractor(formData.roofSize, contractor, formData.insulation, formData.dakraam, formData.dakgoten, formData.lopendeMeterDakgoot, formData.roofType, formData.extras.insulation, formData.extras.gutters, formData.extras.solarPanels, formData.extras.skylights, formData.extras.facadeCladding)
         });
 
         setContractorQuotes(quotes);
@@ -369,13 +369,6 @@ export default function DakrenovatieForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
             contractor: contractor.name,
         })
     }
-
-    const handleReload = (e: React.MouseEvent) => {
-        if (router.pathname === '/quote') {
-            e.preventDefault();
-            router.replace(router.asPath); // reload current page
-        }
-    };
 
     useEffect(() => {
         if (step === 2) {
@@ -656,11 +649,7 @@ export default function DakrenovatieForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col space-y-4">
-                                <Link href="/quote" onClick={handleReload}>
-                                    <Button variant="link">
-                                        Opnieuw beginnen
-                                    </Button>
-                                </Link>
+                                <StartOverLink/>
                             </CardFooter>
                         </>
                     )}

@@ -76,7 +76,7 @@ export type ContractorDakreinigingQuote = {
 }
 
 // Function to calculate quote for a specific contractor
-export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contractor: ExtendedContractor, choiceInsulation: InsulationChoice, choiceDakRaam: DakraamChoice, choiceDakgoten: DakgotenChoice, roofType: 'dakpannen' | 'leien', hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean): ContractorDakrenovatieQuote => {
+export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contractor: ExtendedContractor, choiceInsulation: InsulationChoice, choiceDakRaam: DakraamChoice, choiceDakgoten: DakgotenChoice, lopendeMeterDakgoot: number, roofType: 'dakpannen' | 'leien', hasInsulation: boolean, hasGutters: boolean, hasSolarPanels: boolean, hasSkylights: boolean, hasFacadeCladding: boolean): ContractorDakrenovatieQuote => {
   //const basePrice = 5000
 
   //const materialModifier = contractor.dakbedekking_per_sq_meter //contractor.priceModifiers[formData.roofType]
@@ -93,7 +93,7 @@ export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contra
       materialCost = roofSize * contractor.dakbedekking_per_sq_meter
   }
 
-  const laborCost = roofSize * (contractor.afbraakwerken_per_sq_meter + contractor.timmerwerken_per_sq_meter);
+  const laborCost = roofSize * (contractor.afbraakwerken_per_sq_meter + contractor.timmerwerken_per_sq_meter); // TODO: inrichting van de werf €12/m2
   const afbraakCost = roofSize * contractor.afbraakwerken_per_sq_meter;
   const timmerCost = roofSize * contractor.timmerwerken_per_sq_meter;
   const extrasCost = calculateExtrasCost(hasSolarPanels, hasFacadeCladding);
@@ -103,10 +103,11 @@ export const calculateDakrenovatieQuoteForContractor = (roofSize: number, contra
   if (choiceInsulation === '12cm') insulationCost = roofSize * 55;
   if (choiceInsulation === '14cm') insulationCost = roofSize * 59;
   let dakGotenCost = 0;
-  if (choiceDakgoten === 'zinken goot') dakGotenCost = 270;
-  if (choiceDakgoten === 'bekleden') dakGotenCost = 225;
-  if (choiceDakgoten === 'hanggoot') dakGotenCost = 70;
-  let dakRaamCost = 400;
+  if (choiceDakgoten === 'zinken goot') dakGotenCost = lopendeMeterDakgoot * 270;
+  if (choiceDakgoten === 'bekleden') dakGotenCost = lopendeMeterDakgoot * 225;
+  if (choiceDakgoten === 'hanggoot') dakGotenCost = lopendeMeterDakgoot * 70;
+  let dakRaamCost = 0;
+  if (choiceDakRaam) dakRaamCost = 400;
   
   const totalPrice = materialCost + laborCost +  afbraakCost + timmerCost + insulationCost + dakGotenCost + dakRaamCost + extrasCost;
 
@@ -155,8 +156,13 @@ export const calculateDakreinigingQuoteForContractor = (roofSize: number, contra
     costBasedOnSurface = (roofSize - DAKREINIGINGS_START_METERS) * contractor.dakreiniging_prijs_per_sq_meter;
   }
 
-  const totalPrice = contractor.dakreiniging_start_price + costBasedOnSurface
+  let optionsCost = 0
+  if (hasDakbedekking) optionsCost += (roofSize * 10)
+  //if (hasZonnepanelen) optionsCost += (roofSize * 10) // €10 per paneel
+  if (hasAquaplan) optionsCost += (roofSize * 3)
+  //if (hasVeluxramen) optionsCost += (roofSize * 10) // €10 per velux
 
+  const totalPrice = contractor.dakreiniging_start_price + costBasedOnSurface + optionsCost
 
   // Determine duration
   let estimatedDuration = ""

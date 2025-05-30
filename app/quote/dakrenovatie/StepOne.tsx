@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/domain/auth";
 //import { FreeRoofInspectionSchema, freeRoofInspectionSchema } from "@/domain/services/roofing";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import StartOverLink from "../StartOverLink";
 
 type SidebarProps = {
     formData: FormData,
@@ -98,6 +99,15 @@ export default function StepOne({ formData, setFormData, handleStep1Complete, ha
         let address = addressRef.current.getPlaces()[0].formatted_address;
         setFormData((prev: any) => ({ ...prev, address }))
     }
+
+    const canGoToNextStep = (
+        formData.address &&
+        formData.roofSize &&
+        (formData.roofType ||
+            formData.insulation ||
+            formData.dakgoten ||
+            formData.dakraam)
+    )
 
 
     return (
@@ -382,6 +392,22 @@ export default function StepOne({ formData, setFormData, handleStep1Complete, ha
 
                         </div>
                     </div>
+                    {formData.dakgoten != "niet vervangen" && (
+                        <>
+                            <div className="space-y-2">
+                                <Label htmlFor="lopendeMeterDakgoot">Lopende meter</Label>
+                                <Input
+                                    id="lopendeMeterDakgoot"
+                                    name="lopendeMeterDakgoot"
+                                    value={formData.lopendeMeterDakgoot}
+                                    onChange={handleInputChange}
+                                    placeholder="25"
+                                    type="number"
+                                />
+                            </div>
+                            <Separator />
+                        </>
+                    )}
                 </div>
 
                 {/* Keuze Dakraam */}
@@ -539,11 +565,15 @@ export default function StepOne({ formData, setFormData, handleStep1Complete, ha
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="flex justify-end">
-                <Button onClick={handleStep1Complete} disabled={!formData.address}>
-                    Volgende
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+            <CardFooter className="flex-col">
+                <div className="flex flex-col place-self-end mb-4">
+                    <Button onClick={handleStep1Complete} disabled={!canGoToNextStep} className="place-self-end">
+                        Volgende
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    {!canGoToNextStep && <p className="text-muted-foreground">Vul uw adres in en kies minstens één optie om verder te gaan.</p>}
+                </div>
+                <StartOverLink />
             </CardFooter>
         </>
     );
