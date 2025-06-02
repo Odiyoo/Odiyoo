@@ -122,7 +122,7 @@ export default function LandingPage() {
               </p>
             </div>
             <SmartQuoteBar />
-            <ActionChoice className="mt-28" />
+            <ActionChoice className="mt-28" id="getuigenissen" />
           </div>
         </section>
       </main>
