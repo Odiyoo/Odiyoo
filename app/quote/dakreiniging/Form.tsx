@@ -83,9 +83,6 @@ export default function DakreinigingForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
 
     const onSubmit = async (data: QuoteCompletionSchema) => {
 
-        console.log(data)
-        return;
-
         try {
             setIsSubmissionLoading(true)
             const quote_res = await fetch("/api/quote/dakreiniging", {
@@ -197,8 +194,8 @@ export default function DakreinigingForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
     // Handle step 2 completion
     const handleStep2Complete = () => {
         // reset form
-        setInfoSubmitted(false);
-        form.reset();
+        // setInfoSubmitted(false);
+        // form.reset();
 
         generateQuote();
     }
@@ -222,7 +219,6 @@ export default function DakreinigingForm({ hasGmapsLoaded }: { hasGmapsLoaded: b
 
     useEffect(() => {
         form.setValue("address", formData.address)
-        console.log(form.getValues())
     }, [formData.address])
 
     return (
